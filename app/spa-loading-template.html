@@ -1,0 +1,27 @@
+<div>
+  <div class="nuxt-spa-loading">
+    <img src="icons/icon-512.png" alt="" style="width: 50px;">
+    <h5 class="text-center" style="color: wheat; margin-left: -10px;">تطبيق الكتاب</h5>
+  </div>
+</div>
+
+<style>
+  .nuxt-spa-loading {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    html {
+      background: #121212;
+    }
+  }
+
+  @keyframes nuxt-spa-loading-move {
+    100% {
+      stroke-dashoffset: -128;
+    }
+  }
+</style>

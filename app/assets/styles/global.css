@@ -1,0 +1,99 @@
+html {
+  /* overflow-y: auto; */
+  &.dark {
+    color-scheme: dark;
+  }
+}
+
+.v-card--variant-elevated:not(.v-card--flat) {
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.14);
+}
+
+.v-theme--light {
+  &.v-icon--clickable,
+  &.v-btn--icon {
+    color: rgba(0, 0, 0, 0.54);
+  }
+  --v-border-opacity: 0.09 !important;
+  --v-theme-background: 243, 243, 243 !important;
+}
+
+.v-app-bar,
+.v-navigation-drawer,
+.v-footer {
+  background-color: rgb(var(--v-theme-background)) !important;
+}
+
+.v-overlay__content > .v-card {
+  overflow-y: overlay !important;
+}
+
+.v-btn {
+  text-transform: initial !important;
+}
+
+.v-data-table-footer {
+  .v-field__input {
+    min-height: 36px;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+.v-tab {
+  border-radius: 0 !important;
+}
+
+.v-list-item-title {
+  text-overflow: unset !important;
+}
+
+.v-breadcrumbs-divider {
+  opacity: 0.5;
+}
+
+.v-field--focused {
+  .v-field__prepend-inner .v-icon {
+    color: rgb(var(--v-theme-primary));
+  }
+}
+
+.v-icon .iconify {
+  width: 100%;
+  height: 100%;
+}
+
+@font-face {
+  font-family: 'Kitab';
+  src: url("/fonts/Kitab-Regular.ttf");
+}
+
+.font-kitab {
+  font-family: 'Kitab';
+}
+
+/* @font-face {
+  font-family: 'Kitab Bold';
+  src: url("//cdn.alquran.cloud/public/fonts/Kitab-Bold.ttf");
+}
+
+.font-kitab-bold {
+  font-family: 'Kitab Bold';
+} */
+
+
+/* @font-face {
+  font-family: 'Hafs';
+  src: url('/fonts/hafs.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+} */
+
+
+.ayah__highlight {
+  border: 2px solid rgb(238, 139, 58);
+  border-radius: 8px;
+  color: aqua;
+  transition: border-color 0.3s ease;
+}
