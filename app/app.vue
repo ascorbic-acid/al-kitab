@@ -6,6 +6,8 @@ const theme = useTheme()
 //   THEME_KEY,
 //   computed(() => (theme.current.value.dark ? 'dark' : undefined)),
 // )
+import { useSwStore } from "~/stores/sw_store"
+
 const route = useRoute()
 const title = computed(() => {
   return route.meta?.title || route.matched[0].meta?.title || ''
@@ -35,7 +37,9 @@ useSeoMeta({
   twitterCard: 'summary_large_image',
 })
 
-onMounted(() => {  
+onMounted(() => { 
+  console.log(useSwStore().init());
+  
   // navigator.serviceWorker.addEventListener("controllerchange", (event) => {
   //   console.log('ev: ', event);
     

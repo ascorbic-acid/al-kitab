@@ -8,7 +8,7 @@ import { proxy, type Remote, wrap } from "comlink"
 
 export const useSwStore = defineStore("swStore", () => {
   const swProxy = ref<Remote<any>>();
-  const name = ref("swStore");
+  const appVersion = ref("1.0.0");
   async function test_sw() {
     console.log('test_sw', swProxy.value!);
 
@@ -24,16 +24,25 @@ export const useSwStore = defineStore("swStore", () => {
       const msg = { comlinkInit: true, port: port1 };
       navigator.serviceWorker.controller!.postMessage(msg, [port1]);
       swProxy.value = wrap(port2);
+
+      // load sw app version
+      swProxy.value.getVersion().then(function (_appVersion: string) {        
+        appVersion.value = _appVersion
+      })
     }
   }
 
-  onMounted(() => {
-    init()
-  }
-)
+//   onBeforeMount(() => {
+//     // init()
+//   }
+// )
+
+//   onMounted(() => {
+//   }
+// )
   return {
     swProxy,
-    name,
+    appVersion,
 
     init,
     test_sw

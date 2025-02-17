@@ -7,7 +7,7 @@
             <div style="display: flex; justify-content: space-between;">
               <div>
                 <span class="text-primary">الكتاب</span>
-                <span style="font-size: 8px; font-weight: 100; margin: 5px;">v1.2.2</span>
+                <span style="font-size: 8px; font-weight: 100; margin: 5px;">{{ useSwStore().appVersion }}</span>
               </div>
             </div>
           </v-list-item-title>
