@@ -10,6 +10,7 @@ export const useAppStore = defineStore("appStore", () => {
   const { width } = useWindowSize()
   let loading = ref<boolean>(false)
   let drawer = ref(true)
+  let settingsDrawer = ref(true)
   let loadedSurah = ref<Surah>()
   let loadedSurahs = ref<Surah[]>([])
   let loadedMarkedAyahData = ref<MarkedAyahData[]>()
@@ -65,6 +66,7 @@ export const useAppStore = defineStore("appStore", () => {
     // variables
     loading,
     drawer,
+    settingsDrawer,
     quranSurahs,
     loadedMarkedAyahData,
     loadedSurah,

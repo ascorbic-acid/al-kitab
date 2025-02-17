@@ -3,12 +3,13 @@
     <div style="margin-right: 15px; margin-left: 1px; margin-top: 15px; cursor: pointer;">
       <svgo-mi-book @click="appStore.drawer = !appStore.drawer" style="width: 45px; height: 45px; color: gray;" />
     </div>
+    <v-chip class="mt-4 mx-2" label color="black">
+    {{ appStore.loadedSurah?.name }}
+  </v-chip>
 
     <!-- <v-breadcrumbs :items="breadcrumbs" /> -->
     <v-spacer />
-    <v-chip class="mt-4 mx-2" label color="green">
-      {{ appStore.loadedSurah?.name }}
-    </v-chip>
+
     <v-spacer />
 
     <div class="mx-1 mt-4" style="display: flex; align-items: center;">
@@ -24,9 +25,10 @@
         <v-slider v-model="appStore.fontSize" color="orange" hide-details step="25" show-ticks></v-slider>
       </div>
       <v-spacer class="mx-0"></v-spacer>
-      <div>
-        <v-switch v-model="isDark" color="" hide-details density="compact" inset false-icon="mdi-white-balance-sunny"
-          true-icon="mdi-weather-night" class="opacity-80" />
+      <div class="mx-1" @click="appStore.settingsDrawer = !appStore.settingsDrawer" style="cursor: pointer;">
+        <Icon name="tabler:settings" color="gray" style="width: 45px; height: 45px; color: gray;" />
+        <!-- <v-switch v-model="isDark" color="" hide-details density="compact" inset false-icon="mdi-white-balance-sunny"
+          true-icon="mdi-weather-night" class="opacity-80" /> -->
       </div>
     </div>
   </v-app-bar>
@@ -97,12 +99,12 @@ const breadcrumbs = computed(() => {
       to: r.path,
     }))
 })
-const isDark = computed({
-  get() {
-    return theme.global.name.value === 'dark' ? true : false
-  },
-  set(v) {
-    theme.global.name.value = v ? 'dark' : 'light'
-  },
-})
+// const isDark = computed({
+//   get() {
+//     return theme.global.name.value === 'dark' ? true : false
+//   },
+//   set(v) {
+//     theme.global.name.value = v ? 'dark' : 'light'
+//   },
+// })
 </script>

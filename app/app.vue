@@ -51,6 +51,7 @@ onMounted(() => {
 <template>
   <v-app>
     <AppDrawer />
+    <SettingsDrawer />
     <AppBar />
     <v-main>
       <VitePwaManifest />
