@@ -1,11 +1,11 @@
 import { aliases } from 'vuetify/iconsets/mdi'
 // const sw = process.env.SW === 'true'
 
-const sw = true
+const isDev = import.meta.dev
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: import.meta.dev },
+  devtools: { enabled: isDev },
   future: {
     compatibilityVersion: 4
   },
@@ -72,7 +72,7 @@ export default defineNuxtConfig({
         },
       ],
     },
-    mode: import.meta.env.dev ? "development" : "production",
+    mode: isDev ? "development" : "production",
     scope: "/",
     strategies: 'injectManifest', // : 'generateSW',
     srcDir: './service-worker',
@@ -88,11 +88,11 @@ export default defineNuxtConfig({
     registerType: 'autoUpdate',
     client: {
       // installPrompt: true,
-      periodicSyncForUpdates: import.meta.dev ? 1 : 120,
+      periodicSyncForUpdates: isDev ? 1 : 120,
     },
     devOptions: {
-      enabled: import.meta.dev,
-      suppressWarnings: import.meta.dev ? false : true,
+      enabled: isDev,
+      suppressWarnings: isDev ? false : true,
       navigateFallback: '/',
       navigateFallbackAllowlist: [/^\/$/],
       type: 'module',
