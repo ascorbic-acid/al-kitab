@@ -1,7 +1,6 @@
 <template>
   <v-container>
-    <v-btn @click="test_sw">send to sw </v-btn>
-    <p v-if="swProxy">SW: {{ appVersion }}</p>
+    <!-- <v-btn @click="swStore.test_sw">send to sw </v-btn> -->
     <div v-if="true">
 
       <v-row>
@@ -35,16 +34,17 @@
 
 <script setup lang="ts">
 import { useAppStore } from "~/stores/app_store"
+import { useSwStore } from "~/stores/sw_store"
+
 import type { Ayah, AyahClickEvent } from "~/models/ayah/ayah_model"
 import type { MenuItem } from "~/models/custom-menu/menu_item_model"
-import { type Remote, wrap } from "comlink"
 
 const appStore = useAppStore()
+const swStore = useSwStore()
 const menuOpen = ref(true)
 const snackbar = useSnackbar()
 const { $pwa } = useNuxtApp()
 const { $event } = useNuxtApp()
-const swProxy = ref<Remote<any>>();
 let appVersion = ref('')
 
 const ayahOptions = [
@@ -55,11 +55,8 @@ const ayahOptions = [
   }
 ]
 
-const broadcast = new BroadcastChannel('channel-123');
-
 async function test_sw() {
-  let msg = await swProxy.value!.getVersion()
-  console.log(msg);
+
   
 }
 
@@ -97,27 +94,7 @@ async function openAyahMenu(ayah: Ayah, event: PointerEvent) {
 
 
 onMounted(async () => {
-  async function initComlink() {
-    const { port1, port2 } = new MessageChannel();
-    const msg = {
-      comlinkInit: true,
-      port: port1,
-    };
-    navigator.serviceWorker.controller!.postMessage(msg, [port1]);
 
-    swProxy.value = wrap(port2);
-    
-
-
-    console.log(await swProxy.value.counter);
-  }
-
-  if (navigator.serviceWorker.controller) {
-    initComlink();
-  }
-  navigator.serviceWorker.addEventListener("controllerchange", initComlink);
-  // navigator.serviceWorker.register("sw.js");
-  // appVersion.value = await swProxy.value!.getVersion()
 })
 
 </script>

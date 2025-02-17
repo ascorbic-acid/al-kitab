@@ -20,9 +20,14 @@ function getVersion() {
   return SWConfig.VERSION;
 }
 
+function transfer_test(data) {
+
+}
+
+
 self.addEventListener("message", (event) => {
   if (event.data.comlinkInit) {
-    expose({getVersion}, event.data.port)
+    expose({getVersion, transfer_test}, event.data.port)
     return;
   }
 });

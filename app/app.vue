@@ -10,6 +10,8 @@ const route = useRoute()
 const title = computed(() => {
   return route.meta?.title || route.matched[0].meta?.title || ''
 })
+// const appStore = useAppStore()
+// const swStore = useswStore()
 
 // const { width } = useWindowSize()
 // watchEffect(() => {
@@ -31,6 +33,14 @@ useSeoMeta({
   ogImage: '/social-image.png',
   twitterImage: '/social-image.png',
   twitterCard: 'summary_large_image',
+})
+
+onMounted(() => {  
+  // navigator.serviceWorker.addEventListener("controllerchange", (event) => {
+  //   console.log('ev: ', event);
+    
+  //   useswStore().init()
+  // });
 })
 </script>
 
