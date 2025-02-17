@@ -9,8 +9,8 @@ export const useAppStore = defineStore("appStore", () => {
   const snackbar = useSnackbar();
   const { width } = useWindowSize()
   let loading = ref<boolean>(false)
-  let drawer = ref(true)
-  let settingsDrawer = ref(true)
+  let drawer = ref(false)
+  let settingsDrawer = ref(false)
   let loadedSurah = ref<Surah>()
   let loadedSurahs = ref<Surah[]>([])
   let loadedMarkedAyahData = ref<MarkedAyahData[]>()

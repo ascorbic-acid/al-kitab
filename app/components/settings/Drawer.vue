@@ -1,9 +1,9 @@
 <template>
-    <v-navigation-drawer id="settings-drawer" v-model="appStore.settingsDrawer" :location="'left'" width="350" disable-route-watcher
+    <v-navigation-drawer id="settings-drawer" v-model="appStore.settingsDrawer" :location="'left'" disable-route-watcher
         temporary touchless>
         <v-toolbar :title="'الإعدادات العامة'" flat>
             <template #append>
-                <v-btn icon="mdi-close" variant="flat" @click="" />
+                <v-btn icon="mdi-close" variant="flat" size="small" @click="appStore.settingsDrawer = false" />
             </template>
         </v-toolbar>
 

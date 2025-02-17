@@ -3,7 +3,7 @@
     <div style="margin-right: 15px; margin-left: 1px; margin-top: 15px; cursor: pointer;">
       <svgo-mi-book @click="appStore.drawer = !appStore.drawer" style="width: 45px; height: 45px; color: gray;" />
     </div>
-    <v-chip class="mt-4 mx-2" label color="black">
+    <v-chip class="mt-4 mx-2" label >
     {{ appStore.loadedSurah?.name }}
   </v-chip>
 
@@ -26,7 +26,7 @@
       </div>
       <v-spacer class="mx-0"></v-spacer>
       <div class="mx-1" @click="appStore.settingsDrawer = !appStore.settingsDrawer" style="cursor: pointer;">
-        <Icon name="tabler:settings" color="gray" style="width: 45px; height: 45px; color: gray;" />
+        <Icon name="tabler:settings" color="gray" style="width: 35px; height: 35px; color: gray;" />
         <!-- <v-switch v-model="isDark" color="" hide-details density="compact" inset false-icon="mdi-white-balance-sunny"
           true-icon="mdi-weather-night" class="opacity-80" /> -->
       </div>

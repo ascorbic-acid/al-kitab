@@ -9,6 +9,7 @@
                 <span class="text-primary">الكتاب</span>
                 <span style="font-size: 8px; font-weight: 100; margin: 5px;">{{ useSwStore().appVersion }}</span>
               </div>
+              <v-btn icon="mdi-close" variant="flat" size="small" @click="appStore.drawer = false" />
             </div>
           </v-list-item-title>
 

@@ -50,7 +50,7 @@ let appVersion = ref('')
 const ayahOptions = [
   {
     title: "وضع علامة هنا",
-    subtitle: "لاستكمال القرائة من هنا عن بعد فتح التطبيق",
+    subtitle: "لاستكمال القرائة من هنا بعد فتح التطبيق",
     appendIcon: "subway:mark-2"
   }
 ]
@@ -62,8 +62,8 @@ async function test_sw() {
 
 
 async function openAyahMenu(ayah: Ayah, event: PointerEvent) {
-  console.log(ayah);
-
+  
+  // TODO: Clean up this mess
   let items: MenuItem[] = []
 
   for (let ayahOption of ayahOptions) {
