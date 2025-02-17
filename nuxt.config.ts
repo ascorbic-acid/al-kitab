@@ -88,7 +88,7 @@ export default defineNuxtConfig({
     registerType: 'autoUpdate',
     client: {
       // installPrompt: true,
-      periodicSyncForUpdates: 1,
+      periodicSyncForUpdates: import.meta.dev ? 1 : 120,
     },
     devOptions: {
       enabled: import.meta.dev,
