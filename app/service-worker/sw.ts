@@ -13,9 +13,6 @@ declare let self: ServiceWorkerGlobalScope
 precacheAndRoute(self.__WB_MANIFEST)
 
 
-console.log(`SW v${SWConfig.VERSION}`);
-
-
 function getVersion() {
   return SWConfig.VERSION;
 }

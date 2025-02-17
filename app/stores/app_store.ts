@@ -41,7 +41,11 @@ export const useAppStore = defineStore("appStore", () => {
   onBeforeMount(async () => {
     console.log("onBeforeMount");
     await loadAllSurahs()
-    loadSurah(500)
+    if(!import.meta.dev) {
+      loadSurah(1)
+    } else {
+      loadSurah(500)
+    }
   })
 
   onMounted(async () => {
@@ -52,7 +56,6 @@ export const useAppStore = defineStore("appStore", () => {
       drawer.value = false
     }
 
-    
     loadedMarkedAyahData.value = uGetMarkedSurahsAyahsData()
   })
 

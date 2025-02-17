@@ -5,7 +5,7 @@ const sw = true
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: import.meta.dev },
   future: {
     compatibilityVersion: 4
   },
@@ -72,11 +72,11 @@ export default defineNuxtConfig({
         },
       ],
     },
-    mode: "development",
+    mode: import.meta.env.dev ? "development" : "production",
     scope: "/",
-    strategies: sw ? 'injectManifest' : 'generateSW',
-    srcDir: sw ? './service-worker' : undefined,
-    filename: sw ? 'sw.ts' : undefined,
+    strategies: 'injectManifest', // : 'generateSW',
+    srcDir: './service-worker',
+    filename: 'sw.ts',
     injectRegister: "auto",
     injectManifest: {
       globPatterns: ['**/*.{js,json,css,html,txt,svg,png,ico,webp,woff,woff2,ttf,eot,otf}'],
@@ -91,8 +91,8 @@ export default defineNuxtConfig({
       periodicSyncForUpdates: 1,
     },
     devOptions: {
-      enabled: true,
-      suppressWarnings: false,
+      enabled: import.meta.dev,
+      suppressWarnings: import.meta.dev ? false : true,
       navigateFallback: '/',
       navigateFallbackAllowlist: [/^\/$/],
       type: 'module',
