@@ -13,7 +13,7 @@
           </v-list-item-title>
 
         </v-list-item>
-        <v-list-item class="mt-2">
+        <v-list-item class="mt-0">
           <v-list-item-title>
             <v-text-field class="pt-2" label="بحث عن سورة" v-model="surahSearchTerm" variant="outlined"
               density="compact" placeholder="الانسان" clearable></v-text-field>
@@ -27,7 +27,7 @@
         </v-list-item>
       </v-list>
     </div>
-    <div style="display: flex; flex-direction: row; height: 100%; justify-content: space-around;">
+    <div class="mt-3" style="display: flex; flex-direction: row; height: 100%; justify-content: space-around;">
       <!-- surahs column -->
       <div style="height: 80%; overflow-y: auto;">
 
