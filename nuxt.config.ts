@@ -72,10 +72,10 @@ export default defineNuxtConfig({
         },
       ],
     },
-    mode: "production",
+    mode: "development",
     scope: "/",
     strategies: sw ? 'injectManifest' : 'generateSW',
-    srcDir: sw ? '../service-worker' : undefined,
+    srcDir: sw ? './service-worker' : undefined,
     filename: sw ? 'sw.ts' : undefined,
     injectRegister: "auto",
     injectManifest: {
@@ -85,10 +85,10 @@ export default defineNuxtConfig({
     workbox: {
       globPatterns: ['**/*.{js,json,css,html,txt,svg,png,ico,webp,woff,woff2,ttf,eot,otf}'],
     },
-    registerType: 'prompt',
+    registerType: 'autoUpdate',
     client: {
-      installPrompt: true,
-      periodicSyncForUpdates: 20,
+      // installPrompt: true,
+      periodicSyncForUpdates: 1,
     },
     devOptions: {
       enabled: true,
@@ -115,6 +115,7 @@ export default defineNuxtConfig({
     right: true,
     duration: 5000
   },
+  // watch: ['']
   app: {
     // head: {
     //   link: [{ rel: 'stylesheet', href: '/fonts/Hafs.woff2' }]

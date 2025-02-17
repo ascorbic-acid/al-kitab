@@ -1,7 +1,7 @@
 <template>
   <v-container>
-    <!-- <p v-if="appStore.loadedSurahs">    loaded surahs: {{ appStore.loadedSurahs.length }}    </p>
-    <v-btn @click="loadAllSurahs">load all surahs</v-btn> -->
+    <v-btn @click="test_sw">send to sw </v-btn>
+    <p v-if="swProxy">SW: {{ appVersion }}</p>
     <div v-if="true">
 
       <v-row>
@@ -37,12 +37,15 @@
 import { useAppStore } from "~/stores/app_store"
 import type { Ayah, AyahClickEvent } from "~/models/ayah/ayah_model"
 import type { MenuItem } from "~/models/custom-menu/menu_item_model"
+import { type Remote, wrap } from "comlink"
 
 const appStore = useAppStore()
 const menuOpen = ref(true)
 const snackbar = useSnackbar()
 const { $pwa } = useNuxtApp()
 const { $event } = useNuxtApp()
+const swProxy = ref<Remote<any>>();
+let appVersion = ref('')
 
 const ayahOptions = [
   {
@@ -52,9 +55,18 @@ const ayahOptions = [
   }
 ]
 
+const broadcast = new BroadcastChannel('channel-123');
+
+async function test_sw() {
+  let msg = await swProxy.value!.getVersion()
+  console.log(msg);
+  
+}
+
+
 async function openAyahMenu(ayah: Ayah, event: PointerEvent) {
   console.log(ayah);
-  
+
   let items: MenuItem[] = []
 
   for (let ayahOption of ayahOptions) {
@@ -65,7 +77,7 @@ async function openAyahMenu(ayah: Ayah, event: PointerEvent) {
       itemCB: async () => {
         uMarkAyah(ayah.numberInSurah, appStore.loadedSurah?.number!)
         // uGlowAyah(ayah.numberInSurah)
-        snackbar.add({type: 'success', text: `تم حفض العلامة للاية (${ayah.numberInSurah})`})
+        snackbar.add({ type: 'success', text: `تم حفض العلامة للاية (${ayah.numberInSurah})` })
       }
     })
   }
@@ -84,41 +96,28 @@ async function openAyahMenu(ayah: Ayah, event: PointerEvent) {
 }
 
 
-// function openAyahMenu2(ayah: Ayah, event: PointerEvent) {
-//   if(currentAyahMenu.value) return;
-//   currentAyahMenu.value = { event: event, ayah: ayah }
-//   menuOpen.value = true
-//   console.log(toRaw(currentAyahMenu.value));
-//   uGlowAyah(ayah.numberInSurah)
-// } 
+onMounted(async () => {
+  async function initComlink() {
+    const { port1, port2 } = new MessageChannel();
+    const msg = {
+      comlinkInit: true,
+      port: port1,
+    };
+    navigator.serviceWorker.controller!.postMessage(msg, [port1]);
 
-function ayahMenuClose(value: boolean) {
-  console.log(value, " :closed, unglow: ", currentAyahMenu.value!.ayah.numberInSurah);
+    swProxy.value = wrap(port2);
+    
 
-  uUnglowAyah(currentAyahMenu.value!.ayah.numberInSurah)
-  if (!value) {
-    currentAyahMenu.value = undefined
-    menuOpen.value = false
+
+    console.log(await swProxy.value.counter);
   }
-}
 
-
-function runAyahAction(action: string) {
-  console.log(action);
-
-  if (action === "mark_ayah") {
-    uMarkAyah(currentAyahMenu.value!.ayah.numberInSurah, appStore.loadedSurah?.number!)
-    let md = uGetMarkedSurahsAyahsData()
-    console.log(md);
-
-  } else if (action === "hide_next_ayahs") {
-
+  if (navigator.serviceWorker.controller) {
+    initComlink();
   }
-}
-
-
-onMounted(() => {
-
+  navigator.serviceWorker.addEventListener("controllerchange", initComlink);
+  // navigator.serviceWorker.register("sw.js");
+  // appVersion.value = await swProxy.value!.getVersion()
 })
 
 </script>
