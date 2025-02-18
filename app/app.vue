@@ -39,7 +39,7 @@ useSeoMeta({
 
 onMounted(() => { 
   console.log(useSwStore().init());
-  
+   theme.global.name.value = 'dark'
   // navigator.serviceWorker.addEventListener("controllerchange", (event) => {
   //   console.log('ev: ', event);
     

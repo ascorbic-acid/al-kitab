@@ -9,12 +9,14 @@ import { proxy, type Remote, wrap } from "comlink"
 export const useSwStore = defineStore("swStore", () => {
   const swProxy = ref<Remote<any>>();
   const appVersion = ref("1.0.0");
-  async function test_sw() {
-    console.log('test_sw', swProxy.value!);
 
-    const p = proxy((ret: string) => {console.log('cb with comlink proxy: ' + ret)})
-    const res = await swProxy.value!.transfer_test(p)
-    console.log(res);
+
+  async function test_sw() {
+    let res = await swProxy.value!.get_res()
+    console.log('conn res', res);
+    // const p = proxy((ret: string) => {console.log('cb with comlink proxy: ' + ret)})
+    // const res = await swProxy.value!.init(p)
+    // console.log(res);
   }
 
 
@@ -30,6 +32,10 @@ export const useSwStore = defineStore("swStore", () => {
         appVersion.value = _appVersion
       })
     }
+    // call sw init
+    swProxy.value!.init()
+    console.log(await swProxy.value!.conn);
+    
   }
 
 //   onBeforeMount(() => {

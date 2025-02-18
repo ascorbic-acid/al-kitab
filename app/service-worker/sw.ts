@@ -6,44 +6,68 @@ import { clientsClaim } from 'workbox-core'
 import { NavigationRoute, registerRoute } from 'workbox-routing'
 import { expose } from "comlink";
 import { initCache } from './caching';
+import { initDb } from './db'
 import { sleep } from './utils';
 import { onFetch } from './fetch';
 
 declare let self: ServiceWorkerGlobalScope
 precacheAndRoute(self.__WB_MANIFEST)
+import { Connection } from 'jsstore';
 
+let comlinkMainPort = null
+let conn: Connection = null;
+
+
+async function get_res() {
+  return "HAHA!"
+}
 
 function getVersion() {
   return SWConfig.VERSION;
 }
 
-function transfer_test(data) {
+async function init() {
+  console.log('#### SW INIT ####');
+  
+  // let conn = await initDb()
+  // console.log("conn: ", conn);
+  // expose({conn, get_res}, comlinkMainPort)
 
+  
 }
 
-
-self.addEventListener("message", (event) => {
+async function onMsg(event: ExtendableMessageEvent) {
   if (event.data.comlinkInit) {
-    expose({getVersion, transfer_test}, event.data.port)
+    comlinkMainPort = event.data.port
+    expose({getVersion, init, get_res}, comlinkMainPort)
     return;
   }
-});
-
-
-
-async function onActivate(event: ExtendableEvent) {
-  clientsClaim()
 }
+
+
+
 
 async function onInstall(event: ExtendableEvent) {
   console.log('Service worker install oninstall...');
   self.skipWaiting()
   initCache(event)
-
+  event.waitUntil(initDb().then(function (connection) {
+    console.log(connection);
+    
+    // return connection.terminate();
+}));
+  // initDb()
 }
+
+async function onActivate(event: ExtendableEvent) {
+  clientsClaim()
+}
+
 
 
 
 self.addEventListener('install', onInstall);
 self.addEventListener('activate', onActivate)
 self.addEventListener('fetch', onFetch);
+self.addEventListener("message", onMsg);
+// setTimeout(() => init(), 1000)

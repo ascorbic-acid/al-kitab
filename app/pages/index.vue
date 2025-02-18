@@ -1,6 +1,8 @@
 <template>
   <v-container>
-    <!-- <v-btn @click="swStore.test_sw">send to sw </v-btn> -->
+    <v-btn @click="test_db">test db</v-btn>
+    <v-btn @click="build_db">build db</v-btn>
+
     <div v-if="true">
 
       <v-row>
@@ -38,7 +40,10 @@ import { useSwStore } from "~/stores/sw_store"
 
 import type { Ayah, AyahClickEvent } from "~/models/ayah/ayah_model"
 import type { MenuItem } from "~/models/custom-menu/menu_item_model"
-
+import type { Connection } from "jsstore"
+import initSqlJs from "sql.js/dist/sql-wasm-debug"
+import type { Surah } from "~/models/surah/surah_model"
+// import { initDb } from 
 const appStore = useAppStore()
 const swStore = useSwStore()
 const menuOpen = ref(true)
@@ -46,6 +51,13 @@ const snackbar = useSnackbar()
 const { $pwa } = useNuxtApp()
 const { $event } = useNuxtApp()
 let appVersion = ref('')
+
+let conn = ref<Connection>()
+
+
+
+
+
 
 const ayahOptions = [
   {
@@ -55,14 +67,57 @@ const ayahOptions = [
   }
 ]
 
-async function test_sw() {
+async function test_db() {
+  let term = "ٱلْفَاتِحَةِ"
 
+  let res = await conn.value?.select(
+    {
+      from: "Surah",
+      where: {
+        name: { like: `%${term}%` }
+      }
+    }
+  )
+  console.log(res);
+
+}
+
+async function build_db() {
   
+
+  // const urls = uGetSurahsUrls()
+  // let loadTasks: Promise<Surah>[] = []
+
+  // for (let url of urls) {
+  //   loadTasks.push($fetch<Surah>(url))
+  // }
+  // const res = await Promise.all(loadTasks)
+
+  // let values = []
+
+  // for(let surah of res) {
+  //   values.push(surah)
+  // }
+
+  // conn.value?.insert({
+  //   into: "Surah",
+  //   values: values
+  // })
+
+  // let res1 = await conn.value?.select({
+  //   from: "Surah",
+  //   where: {
+  //     number: 1
+  //   }
+  // })
+  // console.log(res);
+
+
 }
 
 
 async function openAyahMenu(ayah: Ayah, event: PointerEvent) {
-  
+
   // TODO: Clean up this mess
   let items: MenuItem[] = []
 
@@ -94,7 +149,27 @@ async function openAyahMenu(ayah: Ayah, event: PointerEvent) {
 
 
 onMounted(async () => {
+  // conn.value = await initDb()
 
+  let config = {
+    locateFile: (filename: string) => `/sql-wasm-debug.wasm`
+  }
+
+  initSqlJs(config).then(function (SQL: any) {
+    //Create the database
+    const db = new SQL.Database();
+    // Run a query without reading the results
+    db.run("CREATE TABLE test (col1, col2);");
+    // Insert two rows: (1,111) and (2,222)
+    db.run("INSERT INTO test VALUES (?,?), (?,?)", [1, 111, 2, 222]);
+
+    window['db'] = db
+    // Prepare a statement
+    const stmt = db.prepare("SELECT * FROM test WHERE col1 BETWEEN $start AND $end");
+    stmt.getAsObject({ $start: 1, $end: 1 }); // {col1:1, col2:111}
+
+
+  });
 })
 
 </script>
