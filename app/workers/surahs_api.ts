@@ -1,5 +1,6 @@
 import { expose } from "comlink";
 import { type Surah } from "../models/surah/surah_model";
+import { uGetSurahsUrls } from "../utils/surah_utils"
 
 let loadedSurahs: Surah[] = []
 
