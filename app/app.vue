@@ -1,28 +1,11 @@
 <script setup lang="ts">
-// import { useWindowSize } from '@vueuse/core'
-
 const theme = useTheme()
-// provide(
-//   THEME_KEY,
-//   computed(() => (theme.current.value.dark ? 'dark' : undefined)),
-// )
-import { useSwStore } from "~/stores/sw_store"
-
 const route = useRoute()
 const title = computed(() => {
   return route.meta?.title || route.matched[0].meta?.title || ''
 })
-// const appStore = useAppStore()
-// const swStore = useswStore()
+useAppStore().earlyInit()
 
-// const { width } = useWindowSize()
-// watchEffect(() => {
-//   if (width.value < 600) {
-//     a
-//   } else {
-//     theme.global.name.value = 'light'
-//   }
-// })
 useHead({
   title,
   titleTemplate: (t) => (t ? `${t} | Al Kitab` : 'Al Kitab'),
@@ -37,13 +20,12 @@ useSeoMeta({
   twitterCard: 'summary_large_image',
 })
 
+
 onMounted(() => { 
-  console.log(useSwStore().init());
    theme.global.name.value = 'dark'
   // navigator.serviceWorker.addEventListener("controllerchange", (event) => {
   //   console.log('ev: ', event);
     
-  //   useswStore().init()
   // });
 })
 </script>

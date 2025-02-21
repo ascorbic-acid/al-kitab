@@ -1,38 +1,24 @@
-import quranSurahs from "~/assets/quran-surahs.json"
-import CustomStorage from "~/utils/custom_storage"
-import { uGetSurahsUrls } from "~/utils/surah_utils"
 import { useWindowSize } from '@vueuse/core'
 import type { Surah } from "~/models/surah/surah_model";
 import type { MarkedAyahData } from "~/models/ayah/ayah_model";
+import { wrap, type Remote } from "comlink";
 
 export const useAppStore = defineStore("appStore", () => {
-  const snackbar = useSnackbar();
+  // const snackbar = useSnackbar();
   const { width } = useWindowSize()
   let loading = ref<boolean>(false)
   let drawer = ref(false)
   let settingsDrawer = ref(false)
   let loadedSurah = ref<Surah>()
-  let loadedSurahs = ref<Surah[]>([])
   let loadedMarkedAyahData = ref<MarkedAyahData[]>()
   let fontSize = ref(50)
-
-  async function loadAllSurahs() {
-    const urls = uGetSurahsUrls()
-    let loadTasks: Promise<Surah>[] = []
-
-    for(let url of urls) {
-      loadTasks.push($fetch<Surah>(url))
-    }
-    const res = await Promise.all(loadTasks)
-    loadedSurahs.value = res
-  }
+  let wwLink = ref<Remote<any>>();
 
   async function loadSurah(number: number) {
     try {
       loading.value = true
-        let foundSurah = loadedSurahs.value.find((surah) => surah.number == number)        
-        loading.value = false
-        loadedSurah.value = foundSurah
+      loadedSurah.value = await wwLink.value!.api.getSurah(number)
+      loading.value = false
     } catch (e) {
       console.log(e);
       loading.value = false
@@ -40,26 +26,35 @@ export const useAppStore = defineStore("appStore", () => {
   }
 
   onBeforeMount(async () => {
-    console.log("onBeforeMount");
-    await loadAllSurahs()
-    if(!import.meta.dev) {
-      loadSurah(1)
-    } else {
-      loadSurah(500)
-    }
   })
 
   onMounted(async () => {
     // TODO: move to better place
-    if( width.value > 700) {
+    if (width.value > 700) {
       drawer.value = true
     } else {
       drawer.value = false
     }
-
-    loadedMarkedAyahData.value = uGetMarkedSurahsAyahsData()
   })
 
+  // direct top call from app.vue
+  // TODO: find better early place to preload "head script"?
+  async function earlyInit() {
+    const _worker = new Worker(new URL('~/workers/main_worker.ts', import.meta.url), {
+      type: 'module',
+    })
+    wwLink.value! = wrap(_worker)
+    await wwLink.value!.init()
+    // wwLink!.value.api.getSurahs(['name']).then((surahs: Surah[]) => loadedSurahs.value = surahs)
+    setTimeout(() => {
+      if (!import.meta.dev) {
+        loadSurah(1)
+      } else {
+        loadSurah(500)
+      }
+    }, 500)
+
+  }
 
 
   return {
@@ -67,18 +62,17 @@ export const useAppStore = defineStore("appStore", () => {
     loading,
     drawer,
     settingsDrawer,
-    quranSurahs,
     loadedMarkedAyahData,
     loadedSurah,
-    loadedSurahs,
+    wwLink,
     fontSize,
 
     // methods
-    loadAllSurahs,
     loadSurah,
     // getMarkedAyahData,
     // markAyah,
     // scrollToAyah
+    earlyInit
   }
 
 });

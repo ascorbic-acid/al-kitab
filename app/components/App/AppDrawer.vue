@@ -7,7 +7,7 @@
             <div style="display: flex; justify-content: space-between;">
               <div>
                 <span class="text-primary">الكتاب</span>
-                <span style="font-size: 8px; font-weight: 100; margin: 5px;">{{ useSwStore().appVersion }}</span>
+                <span style="font-size: 8px; font-weight: 100; margin: 5px;">{{ '1.5.5' }}</span>
               </div>
               <v-btn icon="mdi-close" variant="flat" size="small" @click="appStore.drawer = false" />
             </div>
@@ -98,24 +98,15 @@
 
 <script setup lang="ts">
 import { useAppStore } from "~/stores/app_store"
+import quranSurahs from "~/assets/quran-surahs.json"
 
 const router = useRouter()
 const routes = router.getRoutes().filter((r) => r.path.lastIndexOf('/') === 0)
 const drawerState = useState('drawer', () => true)
 const { mobile, lgAndUp, width } = useDisplay()
 const appStore = useAppStore()
-// const drawer = computed({
-//   get() {
-//     return drawerState.value || !mobile.value
-//   },
-//   set(val: boolean) {
-//     drawerState.value = val
-//   },
-// })
 const rail = computed(() => !drawerState.value && !mobile.value)
-// routes.sort((a, b) => (a.meta?.drawerIndex ?? 99) - (b.meta?.drawerIndex ?? 98))
 
-// drawerState.value = lgAndUp.value && width.value !== 1280
 let surahSearchTerm = ref("")
 
 
@@ -129,7 +120,7 @@ async function scrollToAyah(number: number) {
 
 const searchSurahsResults = computed(() => {
   if (surahSearchTerm.value) {
-    return useAppStore().quranSurahs.filter(surah => {
+    return quranSurahs.filter(surah => {
       if (surah.name.includes(surahSearchTerm.value) || surah.transliteration.toLocaleLowerCase().includes(surahSearchTerm.value)) {
         return true
       } else {
@@ -137,7 +128,7 @@ const searchSurahsResults = computed(() => {
       }
     })
   } else {
-    return useAppStore().quranSurahs
+    return quranSurahs
   }
 })
 

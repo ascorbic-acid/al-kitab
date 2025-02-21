@@ -1,10 +1,8 @@
 <template>
   <v-container>
-    <v-btn @click="test_db">test db</v-btn>
-    <v-btn @click="build_db">build db</v-btn>
-
+    <!-- <v-btn @click="test_worker">test worker</v-btn> -->
+    <!-- <v-text-field v-model="term" @input="debouncedFn"></v-text-field> -->
     <div v-if="true">
-
       <v-row>
         <v-col md="10">
           <div class="mt-10">
@@ -36,25 +34,14 @@
 
 <script setup lang="ts">
 import { useAppStore } from "~/stores/app_store"
-import { useSwStore } from "~/stores/sw_store"
+import { useDebounceFn } from '@vueuse/core'
 
-import type { Ayah, AyahClickEvent } from "~/models/ayah/ayah_model"
+import type { Ayah } from "~/models/ayah/ayah_model"
 import type { MenuItem } from "~/models/custom-menu/menu_item_model"
-import type { Connection } from "jsstore"
-import initSqlJs from "sql.js/dist/sql-wasm-debug"
-import type { Surah } from "~/models/surah/surah_model"
-// import { initDb } from 
-const appStore = useAppStore()
-const swStore = useSwStore()
-const menuOpen = ref(true)
+
 const snackbar = useSnackbar()
-const { $pwa } = useNuxtApp()
+const appStore = useAppStore()
 const { $event } = useNuxtApp()
-let appVersion = ref('')
-
-let conn = ref<Connection>()
-
-
 
 
 
@@ -68,52 +55,34 @@ const ayahOptions = [
 ]
 
 async function test_db() {
-  let term = "ٱلْفَاتِحَةِ"
+  let surahs = toRaw(appStore.loadedSurahs)
+  let term = "ل"
+  // for (let surah of surahs) {
+  //   for (let ayah of surah.ayahs) {
+  //     if (ayah.text.includes(term)) {
+  //       console.log("found!: ", surah.name, " | ", ayah);
 
-  let res = await conn.value?.select(
-    {
-      from: "Surah",
-      where: {
-        name: { like: `%${term}%` }
-      }
-    }
-  )
+  //     }
+  //   }
+  // }
+
+  //   {
+  //     field: "name",
+  //     query: term,
+  //     limit: 1000,
+  //     suggest: true
+  // }
+  console.log(surahIndex);
+
+  let res = surahIndex!.search(term);
+
   console.log(res);
 
 }
 
-async function build_db() {
-  
-
-  // const urls = uGetSurahsUrls()
-  // let loadTasks: Promise<Surah>[] = []
-
-  // for (let url of urls) {
-  //   loadTasks.push($fetch<Surah>(url))
-  // }
-  // const res = await Promise.all(loadTasks)
-
-  // let values = []
-
-  // for(let surah of res) {
-  //   values.push(surah)
-  // }
-
-  // conn.value?.insert({
-  //   into: "Surah",
-  //   values: values
-  // })
-
-  // let res1 = await conn.value?.select({
-  //   from: "Surah",
-  //   where: {
-  //     number: 1
-  //   }
-  // })
-  // console.log(res);
-
-
-}
+const debouncedFn = useDebounceFn((event) => {
+  search_surah(event)
+}, 1000)
 
 
 async function openAyahMenu(ayah: Ayah, event: PointerEvent) {
@@ -147,29 +116,11 @@ async function openAyahMenu(ayah: Ayah, event: PointerEvent) {
   })
 }
 
+async function test_worker() {
 
+}
 onMounted(async () => {
-  // conn.value = await initDb()
 
-  let config = {
-    locateFile: (filename: string) => `/sql-wasm-debug.wasm`
-  }
-
-  initSqlJs(config).then(function (SQL: any) {
-    //Create the database
-    const db = new SQL.Database();
-    // Run a query without reading the results
-    db.run("CREATE TABLE test (col1, col2);");
-    // Insert two rows: (1,111) and (2,222)
-    db.run("INSERT INTO test VALUES (?,?), (?,?)", [1, 111, 2, 222]);
-
-    window['db'] = db
-    // Prepare a statement
-    const stmt = db.prepare("SELECT * FROM test WHERE col1 BETWEEN $start AND $end");
-    stmt.getAsObject({ $start: 1, $end: 1 }); // {col1:1, col2:111}
-
-
-  });
 })
 
 </script>

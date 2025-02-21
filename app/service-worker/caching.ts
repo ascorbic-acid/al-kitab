@@ -17,9 +17,10 @@ if (import.meta.env.DEV)
 
 
 async function cacheSurahs(cache: any, purge: boolean = false) {
-  if (purge) caches.delete(SWConfig.CACHE_NAME)
+  if (purge) caches.delete(SWConfig.SURAHS_NAME)
   await sleep(5)
   cache.addAll(uGetSurahsUrls());
+  console.log(cache);
 }
 
 async function cacheAssets(cache: any, purge: boolean = false) {
@@ -43,6 +44,12 @@ export async function initCache(event: ExtendableEvent) {
   event.waitUntil(
     caches.open(SWConfig.CACHE_NAME).then((cache) => {
       cacheAssets(cache)
+      cacheSurahs(cache)
+    })
+  );
+
+  event.waitUntil(
+    caches.open(SWConfig.SURAHS_NAME).then((cache) => {
       cacheSurahs(cache)
     })
   );

@@ -6,7 +6,6 @@ import { clientsClaim } from 'workbox-core'
 import { NavigationRoute, registerRoute } from 'workbox-routing'
 import { expose } from "comlink";
 import { initCache } from './caching';
-import { initDb } from './db'
 import { sleep } from './utils';
 import { onFetch } from './fetch';
 
@@ -29,11 +28,6 @@ function getVersion() {
 async function init() {
   console.log('#### SW INIT ####');
   
-  // let conn = await initDb()
-  // console.log("conn: ", conn);
-  // expose({conn, get_res}, comlinkMainPort)
-
-  
 }
 
 async function onMsg(event: ExtendableMessageEvent) {
@@ -51,12 +45,6 @@ async function onInstall(event: ExtendableEvent) {
   console.log('Service worker install oninstall...');
   self.skipWaiting()
   initCache(event)
-  event.waitUntil(initDb().then(function (connection) {
-    console.log(connection);
-    
-    // return connection.terminate();
-}));
-  // initDb()
 }
 
 async function onActivate(event: ExtendableEvent) {
