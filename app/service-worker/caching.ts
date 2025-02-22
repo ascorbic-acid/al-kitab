@@ -44,14 +44,14 @@ export async function initCache(event: ExtendableEvent) {
   event.waitUntil(
     caches.open(SWConfig.CACHE_NAME).then((cache) => {
       cacheAssets(cache)
-      cacheSurahs(cache)
+      // cacheSurahs(cache)
     })
   );
 
-  event.waitUntil(
-    caches.open(SWConfig.SURAHS_NAME).then((cache) => {
-      cacheSurahs(cache)
-    })
-  );
+  // event.waitUntil(
+  //   caches.open(SWConfig.SURAHS_NAME).then((cache) => {
+  //     cacheSurahs(cache)
+  //   })
+  // );
 }
 

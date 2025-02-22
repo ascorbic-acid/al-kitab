@@ -31,9 +31,10 @@ export async function onFetch(event: FetchEvent) {
   event.request.mode == 'cors' || selfUrl.hostname !== url.hostname;
 
   
-  // if(isSurhahAsset) {
-  //   event.respondWith(cacheOnly(event));
-  // }
+  if(isSurhahAsset) {
+    // event.respondWith(cacheOnly(event));
+    return
+  }
 
   if (isOnline) {
     event.respondWith(networkRevalidateAndCache(event));

@@ -88,7 +88,7 @@ export default defineNuxtConfig({
     registerType: 'autoUpdate',
     client: {
       // installPrompt: true,
-      periodicSyncForUpdates: isDev ? 1 : 120,
+      periodicSyncForUpdates: isDev ? 60 : 120,
     },
     devOptions: {
       enabled: isDev,
@@ -122,7 +122,7 @@ export default defineNuxtConfig({
     // }
   },
   devServer: {
-    port: 3030,
+    port: 3000,
     // https: {
     //   key: './ssl/server.key',
     //   cert: './ssl/server.crt'
