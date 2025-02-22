@@ -6,7 +6,7 @@ import { NavigationRoute, registerRoute } from 'workbox-routing'
 import { uGetSurahsUrls } from "../utils/surah_utils"
 import { expose } from "comlink";
 import { sleep } from './utils';
-import { SWConfig } from './config';
+import { AppConfig } from './config';
 
 declare let self: ServiceWorkerGlobalScope
 
@@ -17,14 +17,14 @@ if (import.meta.env.DEV)
 
 
 async function cacheSurahs(cache: any, purge: boolean = false) {
-  if (purge) caches.delete(SWConfig.SURAHS_NAME)
+  if (purge) caches.delete(AppConfig.SURAHS_NAME)
   await sleep(5)
   cache.addAll(uGetSurahsUrls());
   console.log(cache);
 }
 
 async function cacheAssets(cache: any, purge: boolean = false) {
-  // if (purge) caches.delete(SWConfig.CACHE_NAME)
+  // if (purge) caches.delete(AppConfig.CACHE_NAME)
   // let assets = [
   //   '/fonts/Kitab-Regular.ttf',
   //   // '/surahs/1-al-fatiha.json',
@@ -42,14 +42,14 @@ export async function initCache(event: ExtendableEvent) {
     { allowlist },
   ))
   event.waitUntil(
-    caches.open(SWConfig.CACHE_NAME).then((cache) => {
+    caches.open(AppConfig.CACHE_NAME).then((cache) => {
       cacheAssets(cache)
       // cacheSurahs(cache)
     })
   );
 
   // event.waitUntil(
-  //   caches.open(SWConfig.SURAHS_NAME).then((cache) => {
+  //   caches.open(AppConfig.SURAHS_NAME).then((cache) => {
   //     cacheSurahs(cache)
   //   })
   // );

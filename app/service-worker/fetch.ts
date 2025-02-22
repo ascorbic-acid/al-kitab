@@ -5,7 +5,7 @@ import { clientsClaim } from 'workbox-core'
 import { NavigationRoute, registerRoute } from 'workbox-routing'
 import { uGetSurahsUrls } from "../utils/surah_utils"
 import { expose } from "comlink";
-import { SWConfig } from './config';
+import { AppConfig } from './config';
 
 declare let self: ServiceWorkerGlobalScope
 
@@ -71,7 +71,7 @@ async function staleWhileRevalidate(event: FetchEvent) {
   //always attempt to fetch a new copy and update the cache
   return caches.match(event.request).then((cacheResponse) => {
     let fetchResponse = fetch(event.request).then((response) => {
-      return caches.open(SWConfig.CACHE_NAME).then((cache) => {
+      return caches.open(AppConfig.CACHE_NAME).then((cache) => {
         cache.put(event.request, response.clone());
         return response;
       });
@@ -86,7 +86,7 @@ async function networkRevalidateAndCache(event: FetchEvent) {
     (fetchResponse) => {
       if (fetchResponse.ok) {
         //put in cache
-        return caches.open(SWConfig.CACHE_NAME).then((cache) => {
+        return caches.open(AppConfig.CACHE_NAME).then((cache) => {
           cache.put(event.request, fetchResponse.clone());
           return fetchResponse;
         });

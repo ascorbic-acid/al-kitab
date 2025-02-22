@@ -1,6 +1,6 @@
 /// <reference lib="WebWorker" />
 /// <reference types="vite/client" />
-import { SWConfig } from './config';
+import { AppConfig } from './config';
 import { cleanupOutdatedCaches, createHandlerBoundToURL, precacheAndRoute } from 'workbox-precaching'
 import { clientsClaim } from 'workbox-core'
 import { NavigationRoute, registerRoute } from 'workbox-routing'
@@ -22,7 +22,7 @@ async function get_res() {
 }
 
 function getVersion() {
-  return SWConfig.VERSION;
+  return AppConfig.VERSION;
 }
 
 async function init() {
