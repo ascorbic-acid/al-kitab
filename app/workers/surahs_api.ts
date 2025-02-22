@@ -60,26 +60,17 @@ function getDbSchema() {
 
 async function loadAllSurahs() {
   let savedQuran = await db.surahs.get({ id: 1 })
-  console.log("savedQuran: ", savedQuran);
-
   const fetchedSurahs = await fetchSurahs()
 
   if (!savedQuran) {
-    console.log('S1');
-    
     loadedSurahs = fetchedSurahs
     db.surahs.put({ save_id: DB_QURAN_SAVE_ID, quran: fetchedSurahs })
   } else {
-    console.log('S2');
-
     if(savedQuran.save_id !== DB_QURAN_SAVE_ID) {
-      console.log('S3');
       db.surahs.clear()
       loadedSurahs = fetchedSurahs
       db.surahs.put({ save_id: DB_QURAN_SAVE_ID, quran: fetchedSurahs })
     } else {
-      console.log('S4');
-
       loadedSurahs = savedQuran.quran
     }
   }

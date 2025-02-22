@@ -1,3 +1,5 @@
+// TODO: better quranSurahs structure to match mains surahs json 
+import quranSurahs from "~/assets/quran-surahs.json"
 import type { Surah } from "~/models/surah/surah_model";
 import type { MarkedAyahData } from "~/models/ayah/ayah_model";
 import CustomStorage from "./custom_storage";
@@ -35,8 +37,8 @@ export function uGetAyahNrFromTarget(target?: HTMLElement): number {
     return Number(target!.getAttribute("kbt-ayah-nr"))
 }
 
-export function uGetSurahNameFromNr(number: number, surahs: Surah[]): string {
-    return surahs.find(surah => surah.number === number)?.name ?? "-" 
+export function uGetSurahNameFromNr(number: number): string {
+    return quranSurahs.find(surah => surah.id === number)?.name ?? "-" 
 }
 
 
