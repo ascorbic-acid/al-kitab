@@ -109,6 +109,11 @@ const breadcrumbs = computed(() => {
       to: r.path,
     }))
 })
+
+onMounted(() => {
+  $event("search-dialog", {})
+
+})
 // const isDark = computed({
 //   get() {
 //     return theme.global.name.value === 'dark' ? true : false

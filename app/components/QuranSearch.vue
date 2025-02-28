@@ -1,16 +1,18 @@
 <template>
     <v-dialog v-model="dialog" opacity="0" width="500" max-height="80%" min-height="40%">
         <div>
-            <v-text-field @update:model-value="search" append-inner-icon="mdi-magnify" label="ابحث بي كلمة من اية"
-                single-line hide-details full-width></v-text-field>
+            <v-text-field @update:model-value="search" v-model="first" append-inner-icon="mdi-magnify"
+                label="ابحث في ايات القران" single-line hide-details full-width></v-text-field>
         </div>
         <v-card>
             <span class="mt-3"></span>
-            <div class="mx-1">
-                <h4 v-if="items.length < 1" class="text-center">لاتوجد نتائج بحث</h4>
-                <v-list>
-                    <v-list-item @click="searchSelect(item)" v-for="item in items" :key="item.surah.name + item.ayah.numberInSurah">
-                        <v-card variant="text" class="hover-highlight">
+            <div class="mx-3">
+                <h4 v-if="items.length < 1" class="text-center">لاتوجد نتائج بحث, أكتب كلمة من اربع احرف او اكثر</h4>
+                <p class="my-3" style="font-size: 10px;">النتائج: {{ items.length }}</p>
+                <v-virtual-scroll :items="items"      height="320"
+                item-height="48">
+                    <template v-slot:default="{ item }">
+                        <v-card @click="searchSelect(item)" variant="text" class="hover-highlight">
                             <div class="mx-2 my-3">
                                 <v-chip label size="small">
                                     <p style="font-size: 14px;">{{ item.surah.name }}</p>
@@ -20,21 +22,24 @@
                                 <Ayah :ayah="item.ayah" :font-size="20" />
                             </div>
                         </v-card>
-                    </v-list-item>
-                </v-list>
+                        <div class="mb-3"></div>
+                    </template>
+                </v-virtual-scroll>
+
             </div>
         </v-card>
     </v-dialog>
 </template>
 
 <script setup lang="ts">
-import type { Ayah } from '~/models/ayah/ayah_model'
 import type { AyahSearchResult } from '~/models/ayah/ayah_search_result'
-
+import { useDebounceFn } from "@vueuse/core"
 const { $listen } = useNuxtApp()
 const appStore = useAppStore()
+let first = ref('ومن')
+// let first = ref()
 
-let dialog = ref(true)
+let dialog = ref(false)
 // let search = ref('')
 let items = ref<AyahSearchResult[]>([
     {
@@ -71,10 +76,17 @@ let items = ref<AyahSearchResult[]>([
 
 
 async function search(term: string) {
-    let res = await appStore.wwLink!.api.searchSurahs(term)
-    items.value = res
-
+    dbcSearch(term)
 }
+
+let dbcSearch = useDebounceFn(async (term: string) => {
+    if (term.length > 1) {
+        let res = await appStore.wwLink!.api.searchSurahs(term)
+        items.value = res
+    } else {
+        items.value = []
+    }
+}, 1000)
 
 async function searchSelect(result: AyahSearchResult) {
     onMenuClose(true)
