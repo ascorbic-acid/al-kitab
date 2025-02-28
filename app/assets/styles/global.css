@@ -112,6 +112,6 @@ div::-webkit-scrollbar-thumb:hover {
 .ayah__highlight {
   border: 2px solid rgb(238, 139, 58);
   border-radius: 8px;
-  color: aqua;
+  color: green;
   transition: border-color 0.3s ease;
 }
