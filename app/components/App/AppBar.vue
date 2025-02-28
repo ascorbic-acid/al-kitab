@@ -3,7 +3,7 @@
     <div style="margin-right: 15px; margin-left: 1px; margin-top: 15px; cursor: pointer;">
       <svgo-mi-book @click="appStore.drawer = !appStore.drawer" style="width: 45px; height: 45px; color: gray;" />
     </div>
-    <v-chip class="mt-4 mx-2" label >
+    <v-chip class="mt-4 mx-2" label size="small">
     {{ appStore.loadedSurah?.name }}
   </v-chip>
 
@@ -13,6 +13,11 @@
     <v-spacer />
 
     <div class="mx-1 mt-4" style="display: flex; align-items: center;">
+      <div style="width: 50px;">
+        <v-btn @click="openSurahsSearchMenu($event)" color="orange" density="compact" rounded>
+          <Icon name="icon-park-outline:search" size="28" />
+        </v-btn>
+      </div>
       <div style="width: 60px;">
         <v-btn @click="openMarkSurahAyahMenu($event)" color="orange" density="compact" rounded>
           <svgo-mark2 style="width: 25px; height: 25px;" />
@@ -84,6 +89,10 @@ async function openMarkSurahAyahMenu(event: PointerEvent) {
     })
   }
   $event("custom-menu", { items, target: event })
+}
+
+async function openSurahsSearchMenu(event: PointerEvent) {
+  $event("search-dialog", {})
 }
 
 const breadcrumbs = computed(() => {

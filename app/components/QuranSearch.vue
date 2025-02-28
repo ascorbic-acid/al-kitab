@@ -1,0 +1,234 @@
+<template>
+
+            <v-dialog v-model="dialog" scrim="false" opacity="0" width="500" max-height="80%" min-height="40%"
+                :style="{ 'blur-background': dialog }">
+                <div>
+                    <v-text-field @update:model-value="search" append-inner-icon="mdi-magnify" label="ابحث بي كلمة من اية"
+                        single-line hide-details full-width></v-text-field>
+
+                </div>
+                <v-card  >
+                    <span class="mt-3"></span>
+                    <div class="mx-1" >
+                        <h4 v-if="items.length < 1" class="text-center">لاتوجد نتائج بحث</h4>
+                        <v-list>
+                            <v-list-item v-for="item in items" :key="item.surah.name + item.ayah.numberInSurah">
+                                <v-card variant="text"
+                                    class="hover-highlight">
+                                    <div class="mx-2 my-3">
+                                        <v-chip label size="small">
+                                            <p style="font-size: 14px;">{{ item.surah.name }}</p>
+                                        </v-chip>
+                                    </div>
+                                    <div class="mx-5 my-2">
+                                        <Ayah  :ayah="item.ayah" :font-size="20" />
+                                        <!-- <AyahNumLogo :num="item.ayah.numberInSurah" :font-size="25" /> -->
+
+                                    </div>
+                                    <v-card-text>
+                                        <!-- <p style="font-size: 12px;">{{ item.ayah.text }} ({{ item.ayah.numberInSurah }})</p> -->
+
+
+                                    </v-card-text>
+                                </v-card>
+                            </v-list-item>
+                        </v-list>
+                        
+                    </div>
+                </v-card>
+            </v-dialog>
+
+
+</template>
+
+<script setup lang="ts">
+const { $listen } = useNuxtApp()
+const appStore = useAppStore()
+
+let dialog = ref(true)
+// let search = ref('')
+let items = ref([
+    {
+        surah: {
+            name: "سُورَةُ الفاتحة",
+            number: 25
+        },
+        ayah: {
+            numberInSurah: 71,
+            text: "وَمَن تَابَ وَعَمِلَ صَـٰلِحࣰا فَإِنَّهُۥ یَتُوبُ إِلَى ٱللَّهِ مَتَابࣰا"
+        }
+    },
+    {
+        surah: {
+            name: "سُورَةُ المُؤۡمِنُونَ",
+            number: 23
+        },
+        ayah: {
+            numberInSurah: 61,
+            text: "أُو۟لَـٰۤىِٕكَ یُسَـٰرِعُونَ فِی ٱلۡخَیۡرَ ٰ⁠تِ وَهُمۡ لَهَا سَـٰبِقُونَ"
+        }
+    },
+    {
+        surah: {
+            name: "سورة البقرة",
+            number: 2
+        },
+        ayah: {
+            numberInSurah: 285,
+            text: "ءَامَنَ ٱلرَّسُولُ بِمَاۤ أُنزِلَ إِلَیۡهِ مِن رَّبِّهِۦ وَٱلۡمُؤۡمِنُونَۚ كُلٌّ ءَامَنَ بِٱللَّهِ وَمَلَـٰۤىِٕكَتِهِۦ وَكُتُبِهِۦ وَرُسُلِهِۦ لَا نُفَرِّقُ بَیۡنَ أَحَدࣲ مِّن رُّسُلِهِۦۚ وَقَالُوا۟ سَمِعۡنَا وَأَطَعۡنَاۖ غُفۡرَانَكَ رَبَّنَا وَإِلَیۡكَ ٱلۡمَصِیرُ"
+        }
+    }
+    ,
+    {
+        surah: {
+            name: "سورة البقرة",
+            number: 2
+        },
+        ayah: {
+            numberInSurah: 285,
+            text: "ءَامَنَ ٱلرَّسُولُ بِمَاۤ أُنزِلَ إِلَیۡهِ مِن رَّبِّهِۦ وَٱلۡمُؤۡمِنُونَۚ كُلٌّ ءَامَنَ بِٱللَّهِ وَمَلَـٰۤىِٕكَتِهِۦ وَكُتُبِهِۦ وَرُسُلِهِۦ لَا نُفَرِّقُ بَیۡنَ أَحَدࣲ مِّن رُّسُلِهِۦۚ وَقَالُوا۟ سَمِعۡنَا وَأَطَعۡنَاۖ غُفۡرَانَكَ رَبَّنَا وَإِلَیۡكَ ٱلۡمَصِیرُ"
+        }
+    },
+    {
+        surah: {
+            name: "سورة البقرة",
+            number: 2
+        },
+        ayah: {
+            numberInSurah: 285,
+            text: "ءَامَنَ ٱلرَّسُولُ بِمَاۤ أُنزِلَ إِلَیۡهِ مِن رَّبِّهِۦ وَٱلۡمُؤۡمِنُونَۚ كُلٌّ ءَامَنَ بِٱللَّهِ وَمَلَـٰۤىِٕكَتِهِۦ وَكُتُبِهِۦ وَرُسُلِهِۦ لَا نُفَرِّقُ بَیۡنَ أَحَدࣲ مِّن رُّسُلِهِۦۚ وَقَالُوا۟ سَمِعۡنَا وَأَطَعۡنَاۖ غُفۡرَانَكَ رَبَّنَا وَإِلَیۡكَ ٱلۡمَصِیرُ"
+        }
+    },
+    {
+        surah: {
+            name: "سورة البقرة",
+            number: 2
+        },
+        ayah: {
+            numberInSurah: 285,
+            text: "ءَامَنَ ٱلرَّسُولُ بِمَاۤ أُنزِلَ إِلَیۡهِ مِن رَّبِّهِۦ وَٱلۡمُؤۡمِنُونَۚ كُلٌّ ءَامَنَ بِٱللَّهِ وَمَلَـٰۤىِٕكَتِهِۦ وَكُتُبِهِۦ وَرُسُلِهِۦ لَا نُفَرِّقُ بَیۡنَ أَحَدࣲ مِّن رُّسُلِهِۦۚ وَقَالُوا۟ سَمِعۡنَا وَأَطَعۡنَاۖ غُفۡرَانَكَ رَبَّنَا وَإِلَیۡكَ ٱلۡمَصِیرُ"
+        }
+    },
+    {
+        surah: {
+            name: "سورة البقرة",
+            number: 2
+        },
+        ayah: {
+            numberInSurah: 285,
+            text: "ءَامَنَ ٱلرَّسُولُ بِمَاۤ أُنزِلَ إِلَیۡهِ مِن رَّبِّهِۦ وَٱلۡمُؤۡمِنُونَۚ كُلٌّ ءَامَنَ بِٱللَّهِ وَمَلَـٰۤىِٕكَتِهِۦ وَكُتُبِهِۦ وَرُسُلِهِۦ لَا نُفَرِّقُ بَیۡنَ أَحَدࣲ مِّن رُّسُلِهِۦۚ وَقَالُوا۟ سَمِعۡنَا وَأَطَعۡنَاۖ غُفۡرَانَكَ رَبَّنَا وَإِلَیۡكَ ٱلۡمَصِیرُ"
+        }
+    },
+    {
+        surah: {
+            name: "سورة البقرة",
+            number: 2
+        },
+        ayah: {
+            numberInSurah: 285,
+            text: "ءَامَنَ ٱلرَّسُولُ بِمَاۤ أُنزِلَ إِلَیۡهِ مِن رَّبِّهِۦ وَٱلۡمُؤۡمِنُونَۚ كُلٌّ ءَامَنَ بِٱللَّهِ وَمَلَـٰۤىِٕكَتِهِۦ وَكُتُبِهِۦ وَرُسُلِهِۦ لَا نُفَرِّقُ بَیۡنَ أَحَدࣲ مِّن رُّسُلِهِۦۚ وَقَالُوا۟ سَمِعۡنَا وَأَطَعۡنَاۖ غُفۡرَانَكَ رَبَّنَا وَإِلَیۡكَ ٱلۡمَصِیرُ"
+        }
+    },
+    {
+        surah: {
+            name: "سورة البقرة",
+            number: 2
+        },
+        ayah: {
+            numberInSurah: 285,
+            text: "ءَامَنَ ٱلرَّسُولُ بِمَاۤ أُنزِلَ إِلَیۡهِ مِن رَّبِّهِۦ وَٱلۡمُؤۡمِنُونَۚ كُلٌّ ءَامَنَ بِٱللَّهِ وَمَلَـٰۤىِٕكَتِهِۦ وَكُتُبِهِۦ وَرُسُلِهِۦ لَا نُفَرِّقُ بَیۡنَ أَحَدࣲ مِّن رُّسُلِهِۦۚ وَقَالُوا۟ سَمِعۡنَا وَأَطَعۡنَاۖ غُفۡرَانَكَ رَبَّنَا وَإِلَیۡكَ ٱلۡمَصِیرُ"
+        }
+    }
+])
+
+
+// [
+//     {
+//         surah: {
+//             name: "سُورَةُ عَبَسَ",
+//             number: 80
+//         },
+//         ayah: {
+//             numberInSurah: 2,
+//             text: "أَن جَاۤءَهُ ٱلۡأَعۡمَىٰ\n"
+//         }
+//     }
+// ]
+
+async function search(term: string) {
+    let res = await appStore.wwLink.api.searchSurahs(term)
+    items.value = res
+
+}
+
+const filteredItems = computed(() => {
+    return items.value.filter(item => {
+        return item.title.toLowerCase().includes(search.value.toLowerCase());
+    });
+})
+
+function onMenuOpen(_data: MenuData) {
+    dialog.value = true
+    document.querySelector(".v-application__wrap")!.style = "filter: blur(5px)"
+}
+
+function onMenuClose(value: boolean) {
+    dialog.value = false
+    document.querySelector(".v-application__wrap")!.style = "filter: blur(0px)"
+}
+
+watch(dialog, (value) => {
+    if (!value) onMenuClose(value)
+})
+
+$listen('search-dialog', (_data: any) => {
+    onMenuOpen(_data)
+})
+
+</script>
+
+<style scoped>
+.v-dialog {
+    opacity: 0.8;
+    /* Increased transparency */
+}
+
+.hover-highlight:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    /* Highlight effect on hover */
+}
+
+.blur-background {
+    filter: blur(10px);
+    /* Apply blur effect */
+    transition: filter 0.3s ease;
+    /* Smooth transition */
+}
+
+.ayah-num-icon__container {
+    position: relative;
+    display: inline-block;
+    top: 13px;
+    margin-right: 5px;
+    margin-left: 5px;
+    user-select: none
+}
+
+.ayah-num-icon__icon {
+    /* width: 100px; */
+    /* Adjust size as needed */
+    /* height: 100px; */
+    /* Adjust size as needed */
+}
+
+.ayah-num-icon__text-num {
+    position: absolute;
+    top: 46%;
+    left: 50%;
+    transform: translate(-50%, -56%);
+    color: rgb(0, 0, 0);
+    /* font-weight: bold; */
+    /* Change text color as needed */
+    text-align: center;
+}
+</style>

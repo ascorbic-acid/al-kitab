@@ -1,5 +1,7 @@
 <template>
   <v-container>
+    <QuranSearch />
+
     <!-- <v-btn @click="test_worker">test worker</v-btn> -->
     <!-- <v-text-field v-model="term" @input="debouncedFn"></v-text-field> -->
     <div v-if="true">
@@ -21,8 +23,7 @@
             <v-skeleton-loader v-if="appStore.loading" class="mx-auto border" type="article"></v-skeleton-loader>
             <template v-if="appStore.loadedSurah && !appStore.loading" v-for="ayah, idx in appStore.loadedSurah.ayahs"
               :key="ayah.numberInSurah">
-              <Ayah @click="openAyahMenu(ayah, $event)" :ayah="ayah" />
-              <AyahNumLogo :num="ayah.numberInSurah" />
+              <Ayah @click="openAyahMenu(ayah, $event)" :ayah="ayah" :font-size="appStore.fontSize" />
             </template>
           </div>
         </v-col>

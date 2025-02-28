@@ -108,8 +108,12 @@ export async function getSurahs(fields: string[]) {
   return filteredSurahs
 }
 
-export async function searchSurah(term: string) {
+export async function searchSurahs(term: string) {
+  // console.clear()
+  if(term.length < 2) return
   const startTime = performance.now()
+
+  let results = []
 
   for (let i = 0; i < loadedSurahs.length; i++) {
     const surah = loadedSurahs[i]
@@ -119,15 +123,28 @@ export async function searchSurah(term: string) {
       const clearText = sanitize(ayah!.text)
 
       if (clearText.includes(term)) {
-        console.warn(`Surah: ${surah?.name} | Ayah (${ayah?.numberInSurah}): ${ayah?.text} | Clear Text: ${clearText}`);
+        // console.warn(`Surah: ${surah?.name} | Ayah (${ayah?.numberInSurah}): ${ayah?.text} | Clear Text: ${clearText}`);
+        results.push({
+          surah: {
+            name: surah?.name,
+            number: surah?.number
+          },
+          ayah: {
+            numberInSurah: ayah?.numberInSurah,
+            text: ayah?.text
+          }
+        })
       }
     }
 
   }
   const endTime = performance.now()
-  console.log(`term: ${term}`);
+  // console.log(`term: ${term}`);
 
-  console.log(`Search Took ${endTime - startTime} milliseconds`)
+  // console.log(`Search Took ${endTime - startTime} milliseconds`)
+  console.log('search amount ww: ', results.length);
+  
+  return results
 }
 
 const ARABIC_DIACRITICS = [
@@ -163,8 +180,6 @@ const ARABIC_DIACRITICS = [
   // ( َ) arabic fatha
   "\u064F",
   // ( ُ) arabic damma
-  "\u0650",
-  // ( ِ) arabic kasra
   "\u0651",
   // ( ّ) arabic shadda
   "\u0652",
@@ -203,6 +218,7 @@ const ARABIC_DIACRITICS = [
   "\u08F0", // fatha 2
   "\u06E5", // arabic small waw
   "\u06D6", // ARABIC SMALL HIGH LIGATURE SAD WITH LAM WITH ALEF MAKSURA
+  "\u08F1", // ARABIC OPEN DAMMATAN	
 ]
 
 const REPLACE_CHARS = [
