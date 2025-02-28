@@ -63,7 +63,6 @@ async function loadAllSurahs() {
   let savedQuran = await db.surahs.get({ id: 1 })
 
   if (!savedQuran) {
-    console.log('S1');
     fetchedSurahs = await fetchSurahs()
 
     loadedSurahs = fetchedSurahs

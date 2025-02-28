@@ -72,19 +72,20 @@ async function openMarkSurahAyahMenu(event: PointerEvent) {
         })
       },
       itemCB: async () => {
-        if (appStore.loadedSurah?.number === savedMark.surahNumber) {
-          uGoToAyah(savedMark.ayahNumber, savedMark.surahNumber)
-          uGlowAyah(savedMark.ayahNumber)
-          await uSleep(2)
-          uUnglowAyah(savedMark.ayahNumber)
-        } else {
-          await appStore.loadSurah(savedMark.surahNumber)
-          await uSleep(0.5)
-          uGoToAyah(savedMark.ayahNumber, savedMark.surahNumber)
-          uGlowAyah(savedMark.ayahNumber)
-          await uSleep(2)
-          uUnglowAyah(savedMark.ayahNumber)
-        }
+        uGoToAyah(savedMark.ayahNumber, savedMark.surahNumber, appStore)
+        // if (appStore.loadedSurah?.number === savedMark.surahNumber) {
+        //   uGoToAyah(savedMark.ayahNumber, savedMark.surahNumber)
+        //   uGlowAyah(savedMark.ayahNumber)
+        //   await uSleep(2)
+        //   uUnglowAyah(savedMark.ayahNumber)
+        // } else {
+        //   await appStore.loadSurah(savedMark.surahNumber)
+        //   await uSleep(0.5)
+        //   uGoToAyah(savedMark.ayahNumber, savedMark.surahNumber)
+        //   uGlowAyah(savedMark.ayahNumber)
+        //   await uSleep(2)
+        //   uUnglowAyah(savedMark.ayahNumber)
+        // }
       }
     })
   }

@@ -1,56 +1,45 @@
 <template>
-
-            <v-dialog v-model="dialog" scrim="false" opacity="0" width="500" max-height="80%" min-height="40%"
-                :style="{ 'blur-background': dialog }">
-                <div>
-                    <v-text-field @update:model-value="search" append-inner-icon="mdi-magnify" label="ابحث بي كلمة من اية"
-                        single-line hide-details full-width></v-text-field>
-
-                </div>
-                <v-card  >
-                    <span class="mt-3"></span>
-                    <div class="mx-1" >
-                        <h4 v-if="items.length < 1" class="text-center">لاتوجد نتائج بحث</h4>
-                        <v-list>
-                            <v-list-item v-for="item in items" :key="item.surah.name + item.ayah.numberInSurah">
-                                <v-card variant="text"
-                                    class="hover-highlight">
-                                    <div class="mx-2 my-3">
-                                        <v-chip label size="small">
-                                            <p style="font-size: 14px;">{{ item.surah.name }}</p>
-                                        </v-chip>
-                                    </div>
-                                    <div class="mx-5 my-2">
-                                        <Ayah  :ayah="item.ayah" :font-size="20" />
-                                        <!-- <AyahNumLogo :num="item.ayah.numberInSurah" :font-size="25" /> -->
-
-                                    </div>
-                                    <v-card-text>
-                                        <!-- <p style="font-size: 12px;">{{ item.ayah.text }} ({{ item.ayah.numberInSurah }})</p> -->
-
-
-                                    </v-card-text>
-                                </v-card>
-                            </v-list-item>
-                        </v-list>
-                        
-                    </div>
-                </v-card>
-            </v-dialog>
-
-
+    <v-dialog v-model="dialog" opacity="0" width="500" max-height="80%" min-height="40%">
+        <div>
+            <v-text-field @update:model-value="search" append-inner-icon="mdi-magnify" label="ابحث بي كلمة من اية"
+                single-line hide-details full-width></v-text-field>
+        </div>
+        <v-card>
+            <span class="mt-3"></span>
+            <div class="mx-1">
+                <h4 v-if="items.length < 1" class="text-center">لاتوجد نتائج بحث</h4>
+                <v-list>
+                    <v-list-item @click="searchSelect(item)" v-for="item in items" :key="item.surah.name + item.ayah.numberInSurah">
+                        <v-card variant="text" class="hover-highlight">
+                            <div class="mx-2 my-3">
+                                <v-chip label size="small">
+                                    <p style="font-size: 14px;">{{ item.surah.name }}</p>
+                                </v-chip>
+                            </div>
+                            <div class="mx-5 my-2">
+                                <Ayah :ayah="item.ayah" :font-size="20" />
+                            </div>
+                        </v-card>
+                    </v-list-item>
+                </v-list>
+            </div>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script setup lang="ts">
+import type { Ayah } from '~/models/ayah/ayah_model'
+import type { AyahSearchResult } from '~/models/ayah/ayah_search_result'
+
 const { $listen } = useNuxtApp()
 const appStore = useAppStore()
 
 let dialog = ref(true)
 // let search = ref('')
-let items = ref([
+let items = ref<AyahSearchResult[]>([
     {
         surah: {
-            name: "سُورَةُ الفاتحة",
+            name: "سُورَةُ ٱلْفَاتِحَةِ",
             number: 25
         },
         ayah: {
@@ -70,68 +59,7 @@ let items = ref([
     },
     {
         surah: {
-            name: "سورة البقرة",
-            number: 2
-        },
-        ayah: {
-            numberInSurah: 285,
-            text: "ءَامَنَ ٱلرَّسُولُ بِمَاۤ أُنزِلَ إِلَیۡهِ مِن رَّبِّهِۦ وَٱلۡمُؤۡمِنُونَۚ كُلٌّ ءَامَنَ بِٱللَّهِ وَمَلَـٰۤىِٕكَتِهِۦ وَكُتُبِهِۦ وَرُسُلِهِۦ لَا نُفَرِّقُ بَیۡنَ أَحَدࣲ مِّن رُّسُلِهِۦۚ وَقَالُوا۟ سَمِعۡنَا وَأَطَعۡنَاۖ غُفۡرَانَكَ رَبَّنَا وَإِلَیۡكَ ٱلۡمَصِیرُ"
-        }
-    }
-    ,
-    {
-        surah: {
-            name: "سورة البقرة",
-            number: 2
-        },
-        ayah: {
-            numberInSurah: 285,
-            text: "ءَامَنَ ٱلرَّسُولُ بِمَاۤ أُنزِلَ إِلَیۡهِ مِن رَّبِّهِۦ وَٱلۡمُؤۡمِنُونَۚ كُلٌّ ءَامَنَ بِٱللَّهِ وَمَلَـٰۤىِٕكَتِهِۦ وَكُتُبِهِۦ وَرُسُلِهِۦ لَا نُفَرِّقُ بَیۡنَ أَحَدࣲ مِّن رُّسُلِهِۦۚ وَقَالُوا۟ سَمِعۡنَا وَأَطَعۡنَاۖ غُفۡرَانَكَ رَبَّنَا وَإِلَیۡكَ ٱلۡمَصِیرُ"
-        }
-    },
-    {
-        surah: {
-            name: "سورة البقرة",
-            number: 2
-        },
-        ayah: {
-            numberInSurah: 285,
-            text: "ءَامَنَ ٱلرَّسُولُ بِمَاۤ أُنزِلَ إِلَیۡهِ مِن رَّبِّهِۦ وَٱلۡمُؤۡمِنُونَۚ كُلٌّ ءَامَنَ بِٱللَّهِ وَمَلَـٰۤىِٕكَتِهِۦ وَكُتُبِهِۦ وَرُسُلِهِۦ لَا نُفَرِّقُ بَیۡنَ أَحَدࣲ مِّن رُّسُلِهِۦۚ وَقَالُوا۟ سَمِعۡنَا وَأَطَعۡنَاۖ غُفۡرَانَكَ رَبَّنَا وَإِلَیۡكَ ٱلۡمَصِیرُ"
-        }
-    },
-    {
-        surah: {
-            name: "سورة البقرة",
-            number: 2
-        },
-        ayah: {
-            numberInSurah: 285,
-            text: "ءَامَنَ ٱلرَّسُولُ بِمَاۤ أُنزِلَ إِلَیۡهِ مِن رَّبِّهِۦ وَٱلۡمُؤۡمِنُونَۚ كُلٌّ ءَامَنَ بِٱللَّهِ وَمَلَـٰۤىِٕكَتِهِۦ وَكُتُبِهِۦ وَرُسُلِهِۦ لَا نُفَرِّقُ بَیۡنَ أَحَدࣲ مِّن رُّسُلِهِۦۚ وَقَالُوا۟ سَمِعۡنَا وَأَطَعۡنَاۖ غُفۡرَانَكَ رَبَّنَا وَإِلَیۡكَ ٱلۡمَصِیرُ"
-        }
-    },
-    {
-        surah: {
-            name: "سورة البقرة",
-            number: 2
-        },
-        ayah: {
-            numberInSurah: 285,
-            text: "ءَامَنَ ٱلرَّسُولُ بِمَاۤ أُنزِلَ إِلَیۡهِ مِن رَّبِّهِۦ وَٱلۡمُؤۡمِنُونَۚ كُلٌّ ءَامَنَ بِٱللَّهِ وَمَلَـٰۤىِٕكَتِهِۦ وَكُتُبِهِۦ وَرُسُلِهِۦ لَا نُفَرِّقُ بَیۡنَ أَحَدࣲ مِّن رُّسُلِهِۦۚ وَقَالُوا۟ سَمِعۡنَا وَأَطَعۡنَاۖ غُفۡرَانَكَ رَبَّنَا وَإِلَیۡكَ ٱلۡمَصِیرُ"
-        }
-    },
-    {
-        surah: {
-            name: "سورة البقرة",
-            number: 2
-        },
-        ayah: {
-            numberInSurah: 285,
-            text: "ءَامَنَ ٱلرَّسُولُ بِمَاۤ أُنزِلَ إِلَیۡهِ مِن رَّبِّهِۦ وَٱلۡمُؤۡمِنُونَۚ كُلٌّ ءَامَنَ بِٱللَّهِ وَمَلَـٰۤىِٕكَتِهِۦ وَكُتُبِهِۦ وَرُسُلِهِۦ لَا نُفَرِّقُ بَیۡنَ أَحَدࣲ مِّن رُّسُلِهِۦۚ وَقَالُوا۟ سَمِعۡنَا وَأَطَعۡنَاۖ غُفۡرَانَكَ رَبَّنَا وَإِلَیۡكَ ٱلۡمَصِیرُ"
-        }
-    },
-    {
-        surah: {
-            name: "سورة البقرة",
+            name: "سُورَةُ البَقَرَةِ",
             number: 2
         },
         ayah: {
@@ -142,23 +70,17 @@ let items = ref([
 ])
 
 
-// [
-//     {
-//         surah: {
-//             name: "سُورَةُ عَبَسَ",
-//             number: 80
-//         },
-//         ayah: {
-//             numberInSurah: 2,
-//             text: "أَن جَاۤءَهُ ٱلۡأَعۡمَىٰ\n"
-//         }
-//     }
-// ]
-
 async function search(term: string) {
-    let res = await appStore.wwLink.api.searchSurahs(term)
+    let res = await appStore.wwLink!.api.searchSurahs(term)
     items.value = res
 
+}
+
+async function searchSelect(result: AyahSearchResult) {
+    onMenuClose(true)
+    setTimeout(() => {
+        uGoToAyah(result.ayah.numberInSurah, result.surah.number, appStore)
+    }, 500)
 }
 
 const filteredItems = computed(() => {
@@ -167,7 +89,7 @@ const filteredItems = computed(() => {
     });
 })
 
-function onMenuOpen(_data: MenuData) {
+function onMenuOpen(_data: any) {
     dialog.value = true
     document.querySelector(".v-application__wrap")!.style = "filter: blur(5px)"
 }

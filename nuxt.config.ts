@@ -119,7 +119,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       // link: [{ rel: 'stylesheet', href: '/fonts/Hafs.woff2' }],
-      script: [{src: "https://cdn.jsdelivr.net/npm/@docsearch/css@3"}]
+      // script: [{src: ""}]
     }
   },
   devServer: {

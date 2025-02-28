@@ -4,6 +4,7 @@ import type { Surah } from "~/models/surah/surah_model";
 import type { MarkedAyahData } from "~/models/ayah/ayah_model";
 import CustomStorage from "./custom_storage";
 import { SURA_IDS } from "./enums/surahs_ids"
+import { type Store } from "pinia"
 // const snackbar = useSnackbar();
 
 export function uSleep(seconds: number): Promise<void> {
@@ -54,7 +55,7 @@ export function uUnglowAyah(number: number) {
     el.classList.remove("ayah__highlight")
 }
 
-export function uGoToAyah(number: number, surahNumber: number) {
+export function uScrollToAyah(number: number) {
     const el = uGetAyahElFromAttrNr(number)
     if (window.onscrollend !== undefined) {
        console.log('its over!');
@@ -107,4 +108,22 @@ export function uGetMarkedSurahsAyahsData(): MarkedAyahData[] {
     } else {
         return []
     }
+}
+
+export async function uGoToAyah(ayahNumber: number, surahNumber: number, appStore: Store<'appStore'>) {
+    console.log(ayahNumber, surahNumber);
+    
+    if (appStore.loadedSurah?.number === surahNumber) {
+        uScrollToAyah(ayahNumber)
+        uGlowAyah(ayahNumber)
+        await uSleep(2)
+        uUnglowAyah(ayahNumber)
+      } else {
+        await appStore.loadSurah(surahNumber)
+        await uSleep(0.5)
+        uScrollToAyah(ayahNumber)
+        uGlowAyah(ayahNumber)
+        await uSleep(2)
+        uUnglowAyah(ayahNumber)
+      }
 }
