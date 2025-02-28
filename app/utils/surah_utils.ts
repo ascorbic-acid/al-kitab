@@ -57,10 +57,9 @@ export function uUnglowAyah(number: number) {
 
 export function uScrollToAyah(number: number) {
     const el = uGetAyahElFromAttrNr(number)
-    if (window.onscrollend !== undefined) {
-       console.log('its over!');
-       
-      }
+    document.addEventListener("scrollend", (ev: Event) => {
+        console.log('scroll event ended');
+    })
     el.scrollIntoView({ behavior: 'smooth', block: 'center' })
 }
 

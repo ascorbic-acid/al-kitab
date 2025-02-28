@@ -12,7 +12,7 @@
                 <v-virtual-scroll :items="items"      height="320"
                 item-height="48">
                     <template v-slot:default="{ item }">
-                        <v-card @click="searchSelect(item)" variant="text" class="hover-highlight">
+                        <v-card @click="searchSelect(item)" variant="text" class="hover-highlight" style="background-color: #dfdfdf;">
                             <div class="mx-2 my-3">
                                 <v-chip label size="small">
                                     <p style="font-size: 14px;">{{ item.surah.name }}</p>

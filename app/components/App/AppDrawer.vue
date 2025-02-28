@@ -44,7 +44,7 @@
       </div>
 
       <!-- ayahs column -->
-      <div style="height: 80%; overflow-y: auto; overflow-x: unset;">
+      <div style="height: 80%; overflow-y: auto; overflow-x: hidden;">
 
         <template v-if="searchSurahsResults.length > 0" v-for="idx in appStore.loadedSurah?.numberOfAyahs">
           <div>
@@ -112,7 +112,7 @@ let surahSearchTerm = ref("")
 
 
 async function scrollToAyah(number: number) {
-  uGoToAyah(number, appStore.loadedSurah?.number!)
+  uScrollToAyah(number)
   uGlowAyah(number)
   await uSleep(2)
   uUnglowAyah(number)

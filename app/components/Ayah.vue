@@ -60,6 +60,20 @@ const ayahNumFontSize = computed(() => {
 </script>
 
 <style scoped>
+.ayah__span {
+  display: inline;
+  /* flex-shrink: 1; */
+  /* flex-wrap: wrap; */
+  /* border: 1px solid orange; */
+  font-family: Kitab;
+  /* font-size: 38px; */
+  /* word-break: keep-all; */
+  /* white-space: 4; */
+  /* text-overflow: ellipsis; */
+  /* max-width: 200px; */
+
+}
+
 .ayah-num-icon__container {
     position: relative;
     display: inline-block;

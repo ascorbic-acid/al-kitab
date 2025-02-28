@@ -5,8 +5,26 @@ html {
   }
 }
 
+div::-webkit-scrollbar {
+  width: 0.5em;
+}
+
+div::-webkit-scrollbar-track {
+  /* background: orange; */
+}
+
+div::-webkit-scrollbar-thumb {
+  background: orange;
+  border-radius: 8px;
+
+}
+div::-webkit-scrollbar-thumb:hover {
+  background: orange;
+  opacity: 5;
+}
+
 .v-card--variant-elevated:not(.v-card--flat) {
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.14);
+  box-shadow: 0 1px 4px 0 rgba(231, 22, 22, 0.918);
 }
 
 .v-theme--light {

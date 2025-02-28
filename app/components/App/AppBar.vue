@@ -64,7 +64,7 @@ async function openMarkSurahAyahMenu(event: PointerEvent) {
 
   for (let savedMark of markedAyahsData) {
     items.push({
-      label: `${uGetSurahNameFromNr(savedMark.surahNumber, appStore.loadedSurahs)} (${savedMark.ayahNumber})`,
+      label: `${uGetSurahNameFromNr(savedMark.surahNumber)} (${savedMark.ayahNumber})`,
       icon: 'material-symbols-light:close',
       iconCB: async () => {
         uRemoveMarkedAyah(savedMark.ayahNumber, savedMark.surahNumber)
