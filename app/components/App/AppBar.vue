@@ -1,9 +1,9 @@
 <template>
   <v-app-bar flat>
-    <div style="margin-right: 15px; margin-left: 1px; margin-top: 15px; cursor: pointer;">
+    <div style="margin-right: 10px; margin-left: 1px; margin-top: 15px; cursor: pointer;">
       <svgo-mi-book @click="appStore.drawer = !appStore.drawer" style="width: 45px; height: 45px; color: gray;" />
     </div>
-    <v-chip class="mt-4 mx-2" label size="small">
+    <v-chip class="mt-4 mx-1" label size="small">
     {{ appStore.loadedSurah?.name }}
   </v-chip>
 
@@ -13,16 +13,18 @@
     <v-spacer />
 
     <div class="mx-1 mt-4" style="display: flex; align-items: center;">
-      <div style="width: 50px;">
+      <div style="width: 35px;">
         <v-btn @click="openSurahsSearchMenu($event)" color="orange" density="compact" rounded>
           <Icon name="icon-park-outline:search" size="28" />
         </v-btn>
       </div>
-      <div style="width: 60px;">
+      <span class="mx-1"></span>
+      <div style="width: 55px;">
         <v-btn @click="openMarkSurahAyahMenu($event)" color="orange" density="compact" rounded>
           <svgo-mark2 style="width: 25px; height: 25px;" />
         </v-btn>
       </div>
+      <span class="mx-1"></span>
       <div>
         {{ appStore.fontSize }}
       </div>
@@ -111,8 +113,7 @@ const breadcrumbs = computed(() => {
 })
 
 onMounted(() => {
-  $event("search-dialog", {})
-
+  // $event("search-dialog", {})
 })
 // const isDark = computed({
 //   get() {

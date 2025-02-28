@@ -36,8 +36,7 @@ import type { AyahSearchResult } from '~/models/ayah/ayah_search_result'
 import { useDebounceFn } from "@vueuse/core"
 const { $listen } = useNuxtApp()
 const appStore = useAppStore()
-let first = ref('ومن')
-// let first = ref()
+let first = ref()
 
 let dialog = ref(false)
 // let search = ref('')
