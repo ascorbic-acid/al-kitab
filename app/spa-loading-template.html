@@ -2,12 +2,15 @@
   <div class="nuxt-spa-loading">
     <img src="icons/icon-512.png" alt="" style="width: 50px;">
     <h5 class="text-center" style="color: wheat; margin-left: -10px;">تطبيق الكتاب</h5>
-    <h5 class="text-center" style="color: wheat; margin-left: -1px;">v1.12.6</h5>
+    <h5 id="version-tag" class="text-center" style="color: wheat; margin-left: -1px;">v1.12.6</h5>
 
   </div>
 </div>
-<script>
-  console.log("AppConfig: ", window);
+<script setup lang="ts">
+  const VERSION = "v1.2.20";
+  // debugger
+  document.querySelector("#version-tag").innerHTML = VERSION
+  console.log("debugger up2: ", window['al-kitab']);
   
 </script>
 <style >

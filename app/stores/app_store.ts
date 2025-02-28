@@ -2,6 +2,7 @@ import { useWindowSize } from '@vueuse/core'
 import type { Surah } from "~/models/surah/surah_model";
 import type { MarkedAyahData } from "~/models/ayah/ayah_model";
 import { wrap, type Remote } from "comlink";
+import { AppConfig } from '~/service-worker/config';
 
 export const useAppStore = defineStore("appStore", () => {
   // const snackbar = useSnackbar();
@@ -40,6 +41,9 @@ export const useAppStore = defineStore("appStore", () => {
   // direct top call from app.vue
   // TODO: find better early place to preload "head script"?
   async function earlyInit() {
+    (window as any)['alkitab'] = {
+      version: AppConfig.VERSION
+    }
     const _worker = new Worker(new URL('~/workers/main_worker.ts', import.meta.url), {
       type: 'module',
     })
