@@ -3,9 +3,6 @@
     <div style="margin-right: 10px; margin-left: 1px; margin-top: 15px; cursor: pointer;">
       <svgo-mi-book @click="appStore.drawer = !appStore.drawer" style="width: 45px; height: 45px; color: gray;" />
     </div>
-    <v-chip class="mt-4 mx-1" label size="small">
-    {{ appStore.loadedSurah?.name }}
-  </v-chip>
 
     <!-- <v-breadcrumbs :items="breadcrumbs" /> -->
     <v-spacer />

@@ -8,18 +8,22 @@
 
       <v-row>
         <v-col md="10">
-          <div class="reading-card mx-0 mt-5" >
+          <v-chip  class="mx-1" label size="small">
+            {{ appStore.loadedSurah?.name }}
+          </v-chip>
+          <div class="reading-card mx-0 mt-3">
             <h3
               v-if="appStore.loadedSurah?.number !== 9 && appStore.loadedSurah && !appStore.loading && appStore.loadedSurah?.number !== 500"
-              class="text-center mb-3 mt-5" style="font-family: Kitab; font-size: 25px;">بِسۡمِ ٱللَّهِ ٱلرَّحۡمَـٰنِ ٱلرَّحِیمِ
+              class="text-center mb-3 mt-5" style="font-family: Kitab; font-size: 25px;">بِسۡمِ ٱللَّهِ ٱلرَّحۡمَـٰنِ
+              ٱلرَّحِیمِ
             </h3>
-            
+
             <v-skeleton-loader v-if="appStore.loading" class="mx-auto border" type="article"></v-skeleton-loader>
-            
-              <template v-if="appStore.loadedSurah && !appStore.loading" v-for="ayah, idx in appStore.loadedSurah.ayahs"
-                :key="ayah.numberInSurah">
-                <Ayah @click="openAyahMenu(ayah, $event)" :ayah="ayah" :font-size="appStore.fontSize" />
-              </template>
+
+            <template v-if="appStore.loadedSurah && !appStore.loading" v-for="ayah, idx in appStore.loadedSurah.ayahs"
+              :key="ayah.numberInSurah">
+              <Ayah @click="openAyahMenu(ayah, $event)" :ayah="ayah" :font-size="appStore.fontSize" />
+            </template>
           </div>
         </v-col>
       </v-row>
@@ -94,10 +98,8 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-
-
 .reading-card {
-  
+
   padding: 10px;
   height: calc(100vh - 150px) !important;
   overflow-y: scroll;
