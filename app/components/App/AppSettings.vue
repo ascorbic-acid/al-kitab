@@ -25,7 +25,7 @@ const menuShow = ref(false)
 </script>
 
 <template>
-  <v-menu
+  <!-- <v-menu
     v-model="menuShow"
     :close-on-content-click="false"
     location="top right"
@@ -56,5 +56,5 @@ const menuShow = ref(false)
         />
       </v-card-text>
     </v-card>
-  </v-menu>
+  </v-menu> -->
 </template>

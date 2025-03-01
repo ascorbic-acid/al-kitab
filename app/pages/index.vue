@@ -11,7 +11,7 @@
           <v-chip  class="mx-1" label size="small">
             {{ appStore.loadedSurah?.name }}
           </v-chip>
-          <div class="reading-card mx-0 mt-3">
+          <div class="reading-card mx-0 mt-3" :style="{'background-color': theme.global.name.value == 'light' ? '#dfdfdf': '#2d2d2d'}">
             <h3
               v-if="appStore.loadedSurah?.number !== 9 && appStore.loadedSurah && !appStore.loading && appStore.loadedSurah?.number !== 500"
               class="text-center mb-3 mt-5" style="font-family: Kitab; font-size: 25px;">بِسۡمِ ٱللَّهِ ٱلرَّحۡمَـٰنِ
@@ -39,6 +39,7 @@ import { useDebounceFn } from '@vueuse/core'
 import type { Ayah } from "~/models/ayah/ayah_model"
 import type { MenuItem } from "~/models/custom-menu/menu_item_model"
 
+const theme = useTheme()
 const snackbar = useSnackbar()
 const appStore = useAppStore()
 const { $event } = useNuxtApp()
@@ -103,7 +104,6 @@ onMounted(async () => {
   padding: 10px;
   height: calc(100vh - 150px) !important;
   overflow-y: scroll;
-  background-color: #dfdfdf;
   border-radius: 8px;
   /* scrollbar-width: thin; */
   /* scrollbar-color: orange, orange; */

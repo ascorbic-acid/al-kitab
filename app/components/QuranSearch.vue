@@ -1,18 +1,24 @@
 <template>
-    <v-dialog v-model="dialog" opacity="0" width="500" max-height="80%" min-height="40%">
+    <v-dialog v-model="dialog" opacity="0" width="500" max-height="80%" min-height="50%">
         <div>
             <v-text-field @update:model-value="search" v-model="first" append-inner-icon="mdi-magnify"
-                label="ابحث في ايات القران" single-line hide-details full-width></v-text-field>
+                label="ابحث في ايات القران" hide-details full-width bg-color="#87878770" clearable>
+                <template></template>
+            </v-text-field>
         </div>
         <v-card>
-            <span class="mt-3"></span>
-            <div class="mx-3">
+            <div class="my-3 mx-2">
                 <h4 v-if="items.length < 1" class="text-center">لاتوجد نتائج بحث, أكتب كلمة من اربع احرف او اكثر</h4>
-                <p class="my-3" style="font-size: 10px;">النتائج: {{ items.length }}</p>
-                <v-virtual-scroll :items="items"      height="320"
-                item-height="48">
+                <v-chip class="mx-1" label size="small">
+                    النتائج: {{ items.length }}
+                </v-chip>
+            </div>
+            <div class="mx-3">
+                
+                <v-virtual-scroll :items="items" height="90%" item-height="48">
                     <template v-slot:default="{ item }">
-                        <v-card @click="searchSelect(item)" variant="text" class="hover-highlight" style="background-color: #dfdfdf;">
+                        <v-card @click="searchSelect(item)" variant="text" class="hover-highlight"
+                            style="background-color: #dfdfdf;">
                             <div class="mx-2 my-3">
                                 <v-chip label size="small">
                                     <p style="font-size: 14px;">{{ item.surah.name }}</p>
