@@ -7,7 +7,6 @@
             <div style="display: flex; justify-content: space-between;">
               <div>
                 <span class="text-primary">الكتاب</span>
-                <span style="font-size: 8px; font-weight: 100; margin: 5px;">{{ AppConfig.VERSION }}</span>
               </div>
               <v-btn icon="mdi-close" variant="flat" size="small" @click="appStore.drawer = false" />
             </div>
@@ -99,7 +98,6 @@
 <script setup lang="ts">
 import { useAppStore } from "~/stores/app_store"
 import quranSurahs from "~/assets/quran-surahs.json"
-import { AppConfig } from "~/service-worker/config"
 
 const router = useRouter()
 const routes = router.getRoutes().filter((r) => r.path.lastIndexOf('/') === 0)
