@@ -15,11 +15,11 @@
                 <p v-if="items.length < 1 && !searching" class="text-center">لاتوجد نتائج بحث, أكتب كلمة من اربع احرف او اكثر</p>
             </div>
             <div class="text-center" v-if="searching">
-                <v-progress-circular :width="3" color="red" indeterminate></v-progress-circular>
+                <v-progress-circular :width="3" color="orange" indeterminate></v-progress-circular>
             </div>
-            <div class="mx-3">
+            <div class="me-1 ms-3" style="height: 60vh;">
 
-                <v-virtual-scroll v-if="!searching" :items="items" height="90%" item-height="48">
+                <v-virtual-scroll v-if="!searching" :items="items" height="98%" item-height="100">
                     <template v-slot:default="{ item }">
                         <v-card @click="searchSelect(item)" variant="text" class="hover-highlight"
                             style="background-color: #dfdfdf;">
@@ -50,7 +50,7 @@ let searching = ref(false)
 
 let dialog = ref(false)
 // let search = ref('')
-let items = ref<AyahSearchResult[]>([
+let items = shallowRef<AyahSearchResult[]>([
     {
         surah: {
             name: "سُورَةُ ٱلْفَاتِحَةِ",
@@ -115,10 +115,13 @@ async function searchSelect(result: AyahSearchResult) {
 function onMenuOpen(_data: any) {
     dialog.value = true
     document.querySelector(".v-application__wrap")!.style = "filter: blur(5px)"
+    search("من")
 }
 
 function onMenuClose(value: boolean) {
     dialog.value = false
+    console.log('closed');
+    items.value = []
     document.querySelector(".v-application__wrap")!.style = "filter: blur(0px)"
 }
 
