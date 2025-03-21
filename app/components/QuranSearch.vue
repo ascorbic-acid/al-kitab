@@ -1,21 +1,25 @@
 <template>
     <v-dialog v-model="dialog" opacity="0" width="500" max-height="85%" min-height="55%">
         <div>
-            <v-text-field @update:model-value="search" v-model="first" append-inner-icon="mdi-magnify"
-                label="ابحث في ايات القران" hide-details full-width bg-color="#87878770" clearable>
+            <v-text-field @update:model-value="search" append-inner-icon="mdi-magnify" label="ابحث في ايات القران"
+                hide-details full-width bg-color="#87878770" clearable>
                 <template></template>
             </v-text-field>
         </div>
         <v-card>
             <div class="my-3 mx-2">
-                <h4 v-if="items.length < 1" class="text-center">لاتوجد نتائج بحث, أكتب كلمة من اربع احرف او اكثر</h4>
                 <v-chip class="mx-1" label size="small">
                     النتائج: {{ items.length }}
                 </v-chip>
+                <br>
+                <p v-if="items.length < 1 && !searching" class="text-center">لاتوجد نتائج بحث, أكتب كلمة من اربع احرف او اكثر</p>
+            </div>
+            <div class="text-center" v-if="searching">
+                <v-progress-circular :width="3" color="red" indeterminate></v-progress-circular>
             </div>
             <div class="mx-3">
-                
-                <v-virtual-scroll :items="items" height="90%" item-height="48">
+
+                <v-virtual-scroll v-if="!searching" :items="items" height="90%" item-height="48">
                     <template v-slot:default="{ item }">
                         <v-card @click="searchSelect(item)" variant="text" class="hover-highlight"
                             style="background-color: #dfdfdf;">
@@ -42,7 +46,7 @@ import type { AyahSearchResult } from '~/models/ayah/ayah_search_result'
 import { useDebounceFn } from "@vueuse/core"
 const { $listen } = useNuxtApp()
 const appStore = useAppStore()
-let first = ref()
+let searching = ref(false)
 
 let dialog = ref(false)
 // let search = ref('')
@@ -81,6 +85,7 @@ let items = ref<AyahSearchResult[]>([
 
 
 async function search(term: string) {
+    searching.value = true
     dbcSearch(term)
 }
 
@@ -91,7 +96,8 @@ let dbcSearch = useDebounceFn(async (term: string) => {
     } else {
         items.value = []
     }
-}, 1000)
+    searching.value = false
+}, 1500)
 
 async function searchSelect(result: AyahSearchResult) {
     onMenuClose(true)
@@ -100,11 +106,11 @@ async function searchSelect(result: AyahSearchResult) {
     }, 500)
 }
 
-const filteredItems = computed(() => {
-    return items.value.filter(item => {
-        return item.title.toLowerCase().includes(search.value.toLowerCase());
-    });
-})
+// const filteredItems = computed(() => {
+//     return items.value.filter(item => {
+//         return item.title.toLowerCase().includes(search.value.toLowerCase());
+//     });
+// })
 
 function onMenuOpen(_data: any) {
     dialog.value = true
