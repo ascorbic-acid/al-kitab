@@ -34,7 +34,7 @@
 
         <template v-for="(surah, idx) in searchSurahsResults">
           <div class="px-2">
-            <v-btn @click="appStore.loadSurah(surah.id)" block
+            <v-btn @click="loadSurah(surah.id)" block
               :color="surah.id == appStore.loadedSurah?.number ? 'orange' : ''" rounded="false"
               style="margin-right: 5px; margin-left: 5px; margin-bottom: 10px;">
               <p class="text-h6" style="font-size: 22px; font-family: Hafs;">{{ surah.id }}- {{ surah.name }}</p>
@@ -110,8 +110,13 @@ const rail = computed(() => !drawerState.value && !mobile.value)
 
 let surahSearchTerm = ref("")
 
+async function loadSurah(id: number) {
+  appStore.loadSurah(id)
+  appStore.drawer = false
+}
 
 async function scrollToAyah(number: number) {
+  appStore.drawer = false
   uScrollToAyah(number)
   uGlowAyah(number)
   await uSleep(2)
