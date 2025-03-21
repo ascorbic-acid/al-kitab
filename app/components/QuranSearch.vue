@@ -1,5 +1,5 @@
 <template>
-    <v-dialog v-model="dialog" opacity="0" width="500" max-height="80%" min-height="50%">
+    <v-dialog v-model="dialog" opacity="0" width="500" max-height="85%" min-height="55%">
         <div>
             <v-text-field @update:model-value="search" v-model="first" append-inner-icon="mdi-magnify"
                 label="ابحث في ايات القران" hide-details full-width bg-color="#87878770" clearable>
