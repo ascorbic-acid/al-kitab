@@ -102,7 +102,7 @@ onMounted(async () => {
 .reading-card {
 
   padding: 10px;
-  height: calc(100vh - 150px) !important;
+  height: calc(100vh - 180px) !important;
   overflow-y: scroll;
   border-radius: 8px;
   /* scrollbar-width: thin; */

@@ -42,7 +42,7 @@ onMounted(() => {
       <NuxtPage />
       <NuxtSnackbar />
     </v-main>
-    <AppFooter />
+    <!-- <AppFooter /> -->
   </v-app>
 </template>
 
