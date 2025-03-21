@@ -115,13 +115,13 @@ async function searchSelect(result: AyahSearchResult) {
 function onMenuOpen(_data: any) {
     dialog.value = true
     document.querySelector(".v-application__wrap")!.style = "filter: blur(5px)"
-    search("من")
+    // search("من")
 }
 
 function onMenuClose(value: boolean) {
     dialog.value = false
     console.log('closed');
-    items.value = []
+    // items.value = []
     document.querySelector(".v-application__wrap")!.style = "filter: blur(0px)"
 }
 
