@@ -14,7 +14,7 @@ const DB_QURAN_SAVE_ID = 1
 
 let db: Dexie;
 let loadedSurahs: Surah[] = []
-
+export let loadCounter = 5
 export async function initSurahsApi() {
 
   await createDB()
@@ -85,7 +85,7 @@ export async function fetchSurahs(): Promise<Surah[]> {
   const urls = uGetSurahsUrls()
   let loadTasks: Promise<Surah>[] = []
   for (let url of urls) {
-    loadTasks.push((await fetch(url)).json())
+    loadTasks.push(fetch(url).then(res => res.json()))
   }
   return await Promise.all(loadTasks)
 }

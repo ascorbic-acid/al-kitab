@@ -1,7 +1,7 @@
 import { aliases } from 'vuetify/iconsets/mdi'
 // const sw = process.env.SW === 'true'
 
-const isDev = true // import.meta.dev
+const isDev = import.meta.dev
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({

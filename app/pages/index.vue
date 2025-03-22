@@ -5,13 +5,28 @@
     <!-- <v-btn @click="test_worker">test worker</v-btn> -->
     <!-- <v-text-field v-model="term" @input="debouncedFn"></v-text-field> -->
     <div v-if="true">
-
       <v-row>
         <v-col md="10">
-          <v-chip  class="mx-1" label size="small">
+          <v-chip v-if="appStore.loadedSurah" class="mx-1" label size="small">
             {{ appStore.loadedSurah?.name }}
           </v-chip>
-          <div class="reading-card mx-0 mt-3" :style="{'background-color': theme.global.name.value == 'light' ? '#dfdfdf': '#2d2d2d'}">
+          
+          <template v-if="!appStore.loadedSurah" >
+            <div class="mx-10">
+              <br><br>
+                <h5>جاري تحميل التطبيق...</h5>
+                <br>
+                <v-progress-linear
+              color="orange"
+              height="6"
+              indeterminate
+              rounded
+            ></v-progress-linear>
+
+            </div>
+            </template>
+
+          <div v-else class="reading-card mx-0 mt-3" :style="{'background-color': theme.global.name.value == 'light' ? '#dfdfdf': '#2d2d2d'}">
             <h3
               v-if="appStore.loadedSurah?.number !== 9 && appStore.loadedSurah && !appStore.loading && appStore.loadedSurah?.number !== 500"
               class="text-center mb-3 mt-5" style="font-family: Kitab; font-size: 25px;">بِسۡمِ ٱللَّهِ ٱلرَّحۡمَـٰنِ
@@ -44,8 +59,11 @@ const snackbar = useSnackbar()
 const appStore = useAppStore()
 const { $event } = useNuxtApp()
 
-
-
+const loadCounter = toRef(appStore.wwLink.api.loadCounter)
+async function showit() {
+  console.log(await appStore.wwLink.api.loadCounter);
+  
+}
 
 const ayahOptions = [
   {
