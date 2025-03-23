@@ -124,10 +124,10 @@ export default defineNuxtConfig({
   },
   devServer: {
     port: 3000,
-    // https: {
-    //   key: './ssl/server.key',
-    //   cert: './ssl/server.crt'
-    // }
+    https: {
+      key: './ssl/server.key',
+      cert: './ssl/server.crt'
+    }
   },
   nitro: {
     prerender: {

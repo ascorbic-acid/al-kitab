@@ -1,32 +1,24 @@
 <template>
   <v-container>
     <QuranSearch />
-
-    <!-- <v-btn @click="test_worker">test worker</v-btn> -->
-    <!-- <v-text-field v-model="term" @input="debouncedFn"></v-text-field> -->
     <div v-if="true">
       <v-row>
         <v-col md="10">
           <v-chip v-if="appStore.loadedSurah" class="mx-1" label size="small">
             {{ appStore.loadedSurah?.name }}
           </v-chip>
-          
-          <template v-if="!appStore.loadedSurah" >
+
+          <template v-if="!appStore.loadedSurah">
             <div class="mx-10">
               <br><br>
-                <h5>جاري تحميل التطبيق...</h5>
-                <br>
-                <v-progress-linear
-              color="orange"
-              height="6"
-              indeterminate
-              rounded
-            ></v-progress-linear>
-
+              <h5>جاري تحميل التطبيق...</h5>
+              <br>
+              <v-progress-linear color="orange" height="6" indeterminate rounded></v-progress-linear>
             </div>
-            </template>
+          </template>
 
-          <div v-else class="reading-card mx-0 mt-3" :style="{'background-color': theme.global.name.value == 'light' ? '#dfdfdf': '#2d2d2d'}">
+          <div v-else class="reading-card mx-0 mt-3"
+            :style="{ 'background-color': theme.global.name.value == 'light' ? '#dfdfdf' : '#2d2d2d' }">
             <h3
               v-if="appStore.loadedSurah?.number !== 9 && appStore.loadedSurah && !appStore.loading && appStore.loadedSurah?.number !== 500"
               class="text-center mb-3 mt-5" style="font-family: Kitab; font-size: 25px;">بِسۡمِ ٱللَّهِ ٱلرَّحۡمَـٰنِ
@@ -49,8 +41,6 @@
 
 <script setup lang="ts">
 import { useAppStore } from "~/stores/app_store"
-import { useDebounceFn } from '@vueuse/core'
-
 import type { Ayah } from "~/models/ayah/ayah_model"
 import type { MenuItem } from "~/models/custom-menu/menu_item_model"
 
@@ -59,11 +49,6 @@ const snackbar = useSnackbar()
 const appStore = useAppStore()
 const { $event } = useNuxtApp()
 
-const loadCounter = toRef(appStore.wwLink.api.loadCounter)
-async function showit() {
-  console.log(await appStore.wwLink.api.loadCounter);
-  
-}
 
 const ayahOptions = [
   {
@@ -73,13 +58,8 @@ const ayahOptions = [
   }
 ]
 
-const debouncedFn = useDebounceFn((event) => {
-  search_surah(event)
-}, 1000)
-
 
 async function openAyahMenu(ayah: Ayah, event: PointerEvent) {
-
   // TODO: Clean up this mess
   let items: MenuItem[] = []
 
@@ -123,16 +103,6 @@ onMounted(async () => {
   height: calc(100vh - 180px) !important;
   overflow-y: scroll;
   border-radius: 8px;
-  /* scrollbar-width: thin; */
-  /* scrollbar-color: orange, orange; */
-  /* height: calc(100vh - 300px) !important; */
-  /* background-color: red; */
-  /* display: flex; */
-  /* flex-direction: row; */
-  /* justify-content: start; */
-  /* flex-flow: wrap; */
-  /* word-break: normal; */
-  /* word-spacing: -1px; */
   text-align: justify;
   text-justify: inter-word;
 }
