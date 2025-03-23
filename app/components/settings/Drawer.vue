@@ -18,8 +18,11 @@
             <v-divider></v-divider>
             <v-row class="mt-1 mb-0 mx-0">
                 <v-col md="12">
-                    <v-btn @click="useNuxtApp().$pwa?.install" block rounded="1" color="orange">تركيب PWA </v-btn>
-                    <p style="font-size: 8px; margin-top: 5px; text-align: center;">دعم التصفح بدون انترنت وسرعة الدخول</p>
+                    <v-btn @click="$pwa?.install" block rounded="1" color="orange"
+                        :disabled="$pwa?.isPWAInstalled"
+                        >تفعيل وضع PWA </v-btn>
+                    <p style="font-size: 8px; margin-top: 5px; text-align: center;"
+                    >دعم التصفح بدون انترنت وسرعة الدخول</p>
                 </v-col>
             </v-row>
             <v-row class="mx-0 mt-1">
@@ -66,6 +69,7 @@
 <script setup lang="ts">
 import { AppConfig } from "~/service-worker/config"
 
+const { $pwa } = useNuxtApp()
 const appStore = useAppStore()
 
 </script>

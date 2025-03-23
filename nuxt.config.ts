@@ -87,11 +87,11 @@ export default defineNuxtConfig({
     },
     registerType: 'autoUpdate',
     client: {
-      // installPrompt: true,
+      installPrompt: true,
       periodicSyncForUpdates: isDev ? 60 : 120,
     },
     devOptions: {
-      enabled: isDev,
+      enabled: true,
       suppressWarnings: isDev ? false : true,
       navigateFallback: '/',
       navigateFallbackAllowlist: [/^\/$/],
@@ -124,10 +124,10 @@ export default defineNuxtConfig({
   },
   devServer: {
     port: 3000,
-    https: {
-      key: './ssl/server.key',
-      cert: './ssl/server.crt'
-    }
+    // https: {
+    //   key: './ssl/server.key',
+    //   cert: './ssl/server.crt'
+    // }
   },
   nitro: {
     prerender: {
