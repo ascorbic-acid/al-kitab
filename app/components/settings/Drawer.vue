@@ -18,7 +18,7 @@
             <v-divider></v-divider>
             <v-row class="mt-1 mb-0 mx-0">
                 <v-col md="12">
-                    <v-btn @click="useNuxtApp().$pwa?.showInstallPrompt" block rounded="1" color="orange">تركيب PWA </v-btn>
+                    <v-btn @click="useNuxtApp().$pwa?.install" block rounded="1" color="orange">تركيب PWA </v-btn>
                     <p style="font-size: 8px; margin-top: 5px; text-align: center;">دعم التصفح بدون انترنت وسرعة الدخول</p>
                 </v-col>
             </v-row>
