@@ -27,9 +27,10 @@
 
             <v-skeleton-loader v-if="appStore.loading" class="mx-auto border" type="article"></v-skeleton-loader>
 
-            <template v-if="appStore.loadedSurah && !appStore.loading" v-for="ayah, idx in appStore.loadedSurah.ayahs"
+            <template v-if="appStore.loadedSurah && !appStore.loading" 
+              v-for="ayah, idx in appStore.loadedSurah.ayahs"
               :key="ayah.numberInSurah">
-              <Ayah @click="openAyahMenu(ayah, $event)" :ayah="ayah" :font-size="appStore.fontSize" />
+              <Ayah :idx="idx" :ayah="ayah" :font-size="appStore.fontSize" />
             </template>
           </div>
         </v-col>
@@ -41,55 +42,11 @@
 
 <script setup lang="ts">
 import { useAppStore } from "~/stores/app_store"
-import type { Ayah } from "~/models/ayah/ayah_model"
-import type { MenuItem } from "~/models/custom-menu/menu_item_model"
 
 const theme = useTheme()
-const snackbar = useSnackbar()
 const appStore = useAppStore()
-const { $event } = useNuxtApp()
 
 
-const ayahOptions = [
-  {
-    title: "وضع علامة هنا",
-    subtitle: "لاستكمال القرائة من هنا بعد فتح التطبيق",
-    appendIcon: "subway:mark-2"
-  }
-]
-
-
-async function openAyahMenu(ayah: Ayah, event: PointerEvent) {
-  // TODO: Clean up this mess
-  let items: MenuItem[] = []
-
-  for (let ayahOption of ayahOptions) {
-    items.push({
-      label: ayahOption.title,
-      subtitle: ayahOption.subtitle,
-      icon: 'subway:mark-2',
-      itemCB: async () => {
-        uMarkAyah(ayah.numberInSurah, appStore.loadedSurah?.number!)
-        // uGlowAyah(ayah.numberInSurah)
-        snackbar.add({ type: 'success', text: `تم حفض العلامة للاية (${ayah.numberInSurah})` })
-      }
-    })
-  }
-  $event("custom-menu", {
-    items: items,
-    target: event,
-    openCB: function () {
-      return uGlowAyah(ayah.numberInSurah)
-    },
-    closeCB: async function () {
-      return uUnglowAyah(ayah.numberInSurah)
-    }
-  })
-}
-
-async function test_worker() {
-
-}
 onMounted(async () => {
 
 })

@@ -169,6 +169,9 @@ export default defineNuxtConfig({
   // },
   vite: {
     build: { sourcemap: false },
+    server: {
+      allowedHosts: ["ktb.local"]
+    }
   },
   runtimeConfig: {
     github: {

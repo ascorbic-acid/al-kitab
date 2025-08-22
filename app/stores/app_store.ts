@@ -1,6 +1,6 @@
 import { useWindowSize } from '@vueuse/core'
 import type { Surah } from "~/models/surah/surah_model";
-import type { MarkedAyahData } from "~/models/ayah/ayah_model";
+import type { Ayah, MarkedAyahData } from "~/models/ayah/ayah_model";
 import { wrap, type Remote } from "comlink";
 import { AppConfig } from '~/service-worker/config';
 
@@ -24,6 +24,48 @@ export const useAppStore = defineStore("appStore", () => {
       console.log(e);
       loading.value = false
     }
+  }
+
+
+  async function hideAyahsStartFromIdx(startFromIdx: number) {
+
+    for (let i = startFromIdx; i < loadedSurah!.value!.ayahs.length; i++) {
+      const ayah = loadedSurah.value!.ayahs[i]
+      ayah!.hidden = true
+      for (let word of loadedSurah!.value!.ayahs[i]!.ayahWords) {
+        word.hidden = true
+      }
+    }
+  }
+
+  async function showNextHiddenAyah(startFromIdx: number, showWholeAyah: boolean) {
+    let nextIdx = -1
+
+    for (let i = startFromIdx; i >= 0; i--) {
+      if (!loadedSurah!.value!.ayahs[i]?.hidden) break
+      nextIdx = i
+    }
+
+    if (showWholeAyah) {
+      for (let word of loadedSurah!.value!.ayahs[nextIdx]!.ayahWords) {
+        if(word.hidden) {
+          word.hidden = false
+        }
+      }
+      loadedSurah!.value!.ayahs[nextIdx]!.hidden = false
+    }
+    else {      
+      for (let word of loadedSurah!.value!.ayahs[nextIdx]!.ayahWords) {
+        if(word.hidden) {
+          word.hidden = false
+          break
+        }
+      }
+      if(!loadedSurah!.value!.ayahs[nextIdx]!.ayahWords.some(el => el.hidden)) {
+        loadedSurah!.value!.ayahs[nextIdx]!.hidden = false
+      }
+    }
+
   }
 
   onBeforeMount(async () => {
@@ -73,6 +115,8 @@ export const useAppStore = defineStore("appStore", () => {
 
     // methods
     loadSurah,
+    hideAyahsStartFromIdx,
+    showNextHiddenAyah,
     // getMarkedAyahData,
     // markAyah,
     // scrollToAyah

@@ -7,6 +7,7 @@ import { Dexie, type EntityTable } from 'dexie';
 import type { Ayah } from "~/models/ayah/ayah_model";
 import { version } from "vue";
 import { E } from "vitest/dist/chunks/reporters.6vxQttCV.js";
+import { fa } from "vuetify/locale";
 
 const DB_NAME = "alkitab_db"
 const DB_VERSION = 1
@@ -93,7 +94,25 @@ export async function fetchSurahs(): Promise<Surah[]> {
 // loadedSurahs = await db.surahs.toArray()
 
 export async function getSurah(number: number) {
-  return loadedSurahs.find((surah) => surah.number == number)
+  let surah = loadedSurahs.find((surah) => surah.number == number)
+
+  if (surah && surah.ayahs) {
+    surah.ayahs = surah.ayahs.map(ayah => {
+      return {
+        ...ayah,
+        hidden: false,
+        ayahWords: ayah.text.replace("\n", "").split(" ").map(word => {
+          return {
+            hidden: false,
+            word: word,
+          }
+        })
+        
+      }
+    })
+  }
+  
+  return surah
 }
 
 export async function getSurahs(fields: string[]) {
@@ -108,7 +127,6 @@ export async function getSurahs(fields: string[]) {
 }
 
 export async function searchSurahs(term: string) {
-  // console.clear()
   if(term.length < 2) return
   const startTime = performance.now()
 
@@ -138,9 +156,9 @@ export async function searchSurahs(term: string) {
 
   }
   const endTime = performance.now()
-  // console.log(`term: ${term}`);
 
-  // console.log(`Search Took ${endTime - startTime} milliseconds`)
+  console.log(`Search Took ${endTime - startTime} milliseconds for term: ${term}`);
+  console.log("search: ", results);
   console.log('search amount ww: ', results.length);
   
   return results

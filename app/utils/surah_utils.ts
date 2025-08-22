@@ -7,8 +7,8 @@ import { SURA_IDS } from "./enums/surahs_ids"
 import { type Store } from "pinia"
 // const snackbar = useSnackbar();
 
-export function uSleep(seconds: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+export function uSleep(milliseconds: number): Promise<void> {
+    return new Promise(resolve => setTimeout(resolve, milliseconds));
 }
 
 export function uGetSurahsUrls(): string[] {

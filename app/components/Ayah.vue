@@ -1,24 +1,43 @@
 <template>
-    <div class="ayah__span" :style="{ 'font-size': `clamp(1rem, ${fontSize}, 4rem)`, 'cursor': 'pointer' }"
-        :kbt-ayah-nr="props.ayah.numberInSurah" :id="`akb-ayah-nr__${props.ayah.numberInSurah}`">
+    <div class="ayah__span" @click="clickEvent(ayah, $event)" @dblclick="dblClickEvent(ayah, $event)"
+        :style="{ 'font-size': `clamp(1rem, ${fontSize}, 4rem)` }" :kbt-ayah-nr="props.ayah.numberInSurah"
+        :id="`akb-ayah-nr__${props.ayah.numberInSurah}`">
 
-        <template style="display: inline-block;" v-for="word, idx in props.ayah.text.split(' ')">
-            <p :kbt-ayah-nr="props.ayah.numberInSurah" style="display: inline;">{{ " " + word + " " }}</p>
+        <template v-for="ayahWord, idx in props.ayah.ayahWords">
+            <p :kbt-ayah-nr="props.ayah.numberInSurah"
+                :style="{ 'display': 'inline', 'filter': ayahWord.hidden ? 'blur(5px)' : 'blur(0px)' }">{{ " " +
+                    ayahWord.word + " " }}
+            </p>
+
         </template>
 
-        <div class="ayah-num-icon__container" >
-            <img class="ayah-num-icon__icon" src="/icons/ayah.svg" :style="{'width': `${ayahNumFontSize!+15}px`}" />
-            <span class="ayah-num-icon__text-num" :style="{'font-size': `${ayahNumFontSize}px`}" >{{ props.ayah.numberInSurah }}</span>
+        <!-- <span>{{ props.ayah.hidden }}</span> -->
+
+        <div class="ayah-num-icon__container">
+            <img class="ayah-num-icon__icon" src="/icons/ayah.svg" :style="{ 'width': `${ayahNumFontSize! + 15}px` }" />
+            <span class="ayah-num-icon__text-num" :style="{ 'font-size': `${ayahNumFontSize}px` }">{{
+                props.ayah.numberInSurah
+                }}</span>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import { useAppStore } from "~/stores/app_store"
+import type { MenuItem } from "~/models/custom-menu/menu_item_model"
+import type { Ayah } from "~/models/ayah/ayah_model"
 
 // import { Tajweed } from 'tajweed';
-const props = defineProps(['ayah', 'fontSize'])
+const snackbar = useSnackbar()
+// const props = defineProps(['idx', 'ayah', 'fontSize'])
 const appStore = useAppStore()
+const { $event } = useNuxtApp()
+
+const props = defineProps<{
+    idx: number,
+    ayah: Ayah,
+    fontSize: number
+}>()
 
 // let parseTajweed = new Tajweed()
 
@@ -57,20 +76,86 @@ const ayahNumFontSize = computed(() => {
         return 18
     }
 })
+
+function clickEvent(ayah: Ayah, event: PointerEvent) {
+    if(ayah.hidden) {
+        const randTimes = Math.round(Math.random() + 1 * 1 )
+        for(let i = 1; i <= randTimes; i++) {
+            appStore.showNextHiddenAyah(props.idx, false)
+        }
+    } else {
+        openAyahMenu(ayah, event)
+    }
+}
+
+function dblClickEvent(ayah: Ayah, event: PointerEvent) {
+    if(ayah.hidden) {
+        appStore.showNextHiddenAyah(props.idx, true)
+    } else {
+        openAyahMenu(ayah, event)
+    }
+}
+
+async function openAyahMenu(ayah: Ayah, event: PointerEvent) {
+    $event("custom-menu", {
+        items: [
+            {
+                label: "وضع علامة هنا",
+                subtitle: "لاستكمال القرائة من هنا بعد فتح التطبيق",
+                icon: 'subway:mark-2',
+                itemCB: async () => {
+                    uMarkAyah(ayah.numberInSurah, appStore.loadedSurah?.number!)
+                    // uGlowAyah(ayah.numberInSurah)
+                    snackbar.add({ type: 'success', text: `تم حفض العلامة للاية (${ayah.numberInSurah})` })
+                }
+            },
+            {
+                label: "إخفاء الايات التالية",
+                subtitle: "للتدرب وتقيم مستوى الحفض",
+                icon: 'subway:mark-2',
+                itemCB: async () => {
+                    appStore.hideAyahsStartFromIdx(props.idx)
+                }
+            }
+        ],
+        target: event,
+        openCB: function () {
+            return uGlowAyah(ayah.numberInSurah)
+        },
+        closeCB: async function () {
+            return uUnglowAyah(ayah.numberInSurah)
+        }
+    })
+}
+
+// watch(async () => props.ayah.hidden, async (newVal, oldVal) => {
+//     if (props.ayah.hidden) {
+//         for (let word of props.ayah.ayahWords) {
+//             word.hidden = true
+//         }
+//     } else {
+//         for (let word of props.ayah.ayahWords) {
+//             word.hidden = false
+//         }
+//     }
+// }, { deep: true })
+
+
 </script>
 
 <style scoped>
 .ayah__span {
-  display: inline;
-  /* flex-shrink: 1; */
-  /* flex-wrap: wrap; */
-  /* border: 1px solid orange; */
-  font-family: Kitab;
-  /* font-size: 38px; */
-  /* word-break: keep-all; */
-  /* white-space: 4; */
-  /* text-overflow: ellipsis; */
-  /* max-width: 200px; */
+    display: inline;
+    /* flex-shrink: 1; */
+    /* flex-wrap: wrap; */
+    /* border: 1px solid orange; */
+    cursor: pointer;
+    font-family: Kitab;
+    /* font-size: 38px; */
+    /* word-break: keep-all; */
+    /* white-space: 4; */
+    /* text-overflow: ellipsis; */
+    /* max-width: 200px; */
 
 }
 

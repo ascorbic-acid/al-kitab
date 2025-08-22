@@ -1,6 +1,13 @@
+export interface AyahWords {
+    word: string,
+    hidden?: boolean
+}
+
 export interface Ayah {
     number: number,
+    hidden?: boolean,
     text: string,
+    ayahWords: AyahWords[],
     numberInSurah: number,
     juz: number,
     manzil: number,

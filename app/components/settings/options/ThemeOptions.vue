@@ -27,4 +27,8 @@ const model = computed({
     }
 })
 
+onMounted(async () => {
+  model.value = true
+})
+
 </script>

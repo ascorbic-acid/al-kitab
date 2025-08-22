@@ -29,7 +29,7 @@
                                 </v-chip>
                             </div>
                             <div class="mx-5 my-2">
-                                <Ayah :ayah="item.ayah" :font-size="20" />
+                                <SearchResultAyah :ayah="item.ayah" :font-size="20" />
                             </div>
                         </v-card>
                         <div class="mb-3"></div>
@@ -44,6 +44,7 @@
 <script setup lang="ts">
 import type { AyahSearchResult } from '~/models/ayah/ayah_search_result'
 import { useDebounceFn } from "@vueuse/core"
+import SearchResultAyah from './SearchResultAyah.vue'
 const { $listen } = useNuxtApp()
 const appStore = useAppStore()
 let searching = ref(false)
@@ -53,7 +54,7 @@ let dialog = ref(false)
 let items = shallowRef<AyahSearchResult[]>([
     {
         surah: {
-            name: "سُورَةُ ٱلْفَاتِحَةِ",
+            name: "سُورَةُ الفُرۡقَانِ",
             number: 25
         },
         ayah: {
