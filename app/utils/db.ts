@@ -12,7 +12,7 @@ export async function initDb() {
         console.log('db created');
     }
     else {
-        console.log('db opened2');
+        console.log('db opened');
     }
     return connection;
 }

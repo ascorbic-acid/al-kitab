@@ -59,6 +59,8 @@ onMounted(async () => {
   padding: 10px;
   height: calc(100vh - 180px) !important;
   overflow-y: scroll;
+  -webkit-overflow-scrolling: auto;
+  scroll-behavior: smooth;
   border-radius: 8px;
   text-align: justify;
   text-justify: inter-word;
