@@ -5,7 +5,7 @@
 
         <template v-for="ayahWord, idx in props.ayah.ayahWords">
             <p :kbt-ayah-nr="props.ayah.numberInSurah"
-                :style="{ 'display': 'inline', 'filter': ayahWord.hidden ? 'blur(5px)' : 'blur(0px)' }">{{ " " +
+                :style="{ 'display': 'inline', 'filter': ayahWord.hidden ? 'blur(6px)' : 'blur(0px)' }">{{ " " +
                     ayahWord.word + " " }}
             </p>
 
@@ -112,9 +112,10 @@ async function openAyahMenu(ayah: Ayah, event: PointerEvent) {
             {
                 label: "إخفاء الايات التالية",
                 subtitle: "للتدرب وتقيم مستوى الحفض",
-                icon: 'subway:mark-2',
+                icon: 'material-symbols:model-training',
                 itemCB: async () => {
                     appStore.hideAyahsStartFromIdx(props.idx)
+                    snackbar.add({ type: 'info', text: `انقر مرة على اي نص مخفي لعرض الكلمات أو مرتين بسرعة لعرض الاية كاملة` })
                 }
             }
         ],
