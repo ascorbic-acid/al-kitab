@@ -169,6 +169,9 @@ export default defineNuxtConfig({
   // },
   vite: {
     build: { sourcemap: false },
+    optimizeDeps: {
+      exclude: ['@electric-sql/pglite']
+    },
     server: {
       allowedHosts: ["ktb.local"]
     }

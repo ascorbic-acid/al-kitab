@@ -22,8 +22,12 @@ useSeoMeta({
 
 
 onMounted(() => { 
-  //  theme.global.name.value = 'dark'
-   theme.global.name.value = 'light'
+  setTimeout(() => {
+    theme.global.name.value = 'dark'
+    console.log('dart');
+    
+  }, 3000)
+  //  theme.global.name.value = 'light'
 
   // navigator.serviceWorker.addEventListener("controllerchange", (event) => {
   //   console.log('ev: ', event);

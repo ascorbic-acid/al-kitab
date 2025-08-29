@@ -33,6 +33,9 @@
     "vuetify-nuxt-module": "^0.18.3"
   },
   "dependencies": {
+    "@electric-sql/pglite": "^0.3.7",
+    "@electric-sql/pglite-tools": "^0.2.12",
+    "@intlify/message-compiler": "^11.1.11",
     "@pinia/nuxt": "^0.10.1",
     "@vueuse/nuxt": "^12.5.0",
     "comlink": "^4.4.2",

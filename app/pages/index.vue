@@ -1,7 +1,10 @@
 <template>
   <v-container>
     <QuranSearch />
-    <div v-if="true">
+    <v-btn @click="create_db">Create DB</v-btn>
+        <v-btn @click="test_db">Test DB</v-btn>
+
+    <div v-if="false">
       <v-row>
         <v-col md="10">
           <v-chip v-if="appStore.loadedSurah" class="mx-1" label size="small">
@@ -42,13 +45,52 @@
 
 <script setup lang="ts">
 import { useAppStore } from "~/stores/app_store"
+import { PGlite } from '@electric-sql/pglite'
+import { pg_trgm } from '@electric-sql/pglite/contrib/pg_trgm';
+import { pgDump } from '@electric-sql/pglite-tools/pg_dump'
 
 const theme = useTheme()
 const appStore = useAppStore()
 
+const db = new PGlite({ extensions: { pg_trgm } } )
+
+
+async function create_db() {
+  let res = await fetch("quran.sql")
+  let quranSql = await res.text()
+  await db.exec(quranSql)
+  console.log("loaded")
+}
+
+async function test_db() {
+  let term = 'تبارك الذي بي'
+  let res = await db.query(`
+
+
+      -- 2) Trigram similarity search on raw text (fuzzy matching / paraphrase)
+      -- SELECT 'trgm' AS method, number, imlaei_simple_text, similarity(imlaei_simple_text, '${term}') AS sim
+      -- FROM ayah
+      -- WHERE similarity(imlaei_simple_text, '${term}') > 0.15
+      -- ORDER BY sim DESC;
+
+    SELECT number, imlaei_simple_text,
+          ts_rank(to_tsvector('simple', imlaei_simple_text), to_tsquery('simple', $1))
+          AS rank
+    FROM ayah
+    WHERE to_tsvector('simple', imlaei_simple_text) @@ to_tsquery('simple', $1)
+    ORDER BY rank DESC;
+
+  `, [term])
+  
+  for(let row of res.rows) {
+    console.log(`txt: ${row.imlaei_simple_text} | rank: ${row.rank} | sim: ${row.sim}`)
+  }
+
+  console.log(res)
+}
 
 onMounted(async () => {
-
+  theme.global.name.value ='dark'
 })
 
 </script>
