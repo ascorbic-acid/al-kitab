@@ -19,6 +19,7 @@ export const useAppStore = defineStore("appStore", () => {
     try {
       loading.value = true
       loadedSurah.value = await wwLink.value!.api.getSurah(number)
+      console.log(loadedSurah)
       loading.value = false
     } catch (e) {
       console.log(e);
@@ -82,21 +83,19 @@ export const useAppStore = defineStore("appStore", () => {
 
   // direct top call from app.vue
   // TODO: find better early place to preload "head script"?
-  async function earlyInit() {
+  async function earlyInit(_worker: Worker) {
+    // TODO: better way with settings
     (window as any)['alkitab'] = {
       version: AppConfig.VERSION
     }
-    const _worker = new Worker(new URL('~/workers/main_worker.ts', import.meta.url), {
-      type: 'module',
-    })
+    
     wwLink.value! = wrap(_worker)
-    await wwLink.value!.init()
-    // wwLink!.value.api.getSurahs(['name']).then((surahs: Surah[]) => loadedSurahs.value = surahs)
+    
     setTimeout(() => {
       if (!import.meta.dev) {
         loadSurah(1)
       } else {
-        loadSurah(500)
+        loadSurah(1)
       }
     }, 500)
 

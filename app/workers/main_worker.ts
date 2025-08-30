@@ -4,14 +4,16 @@ import { type Surah } from "../models/surah/surah_model";
 import { getSurah, searchSurahs, loadCounter } from "./surahs_api";
 // import { search_surah } from "./search";
 
+console.log("### Main WW Loaded ###");
 
-async function init() {
-    console.log("### Main WW Init ###");
-    await initSurahsApi()
-}
+initSurahsApi().then(() => {
+    console.log("Surahs API initialized in WW");
+    // loadAllSurahs().then(() => {
+    //     console.log("All Surahs loaded in WW");
+    // });
+});
 
 const exposeObj = {
-    init,
     api: {
         getSurah,
         getSurahs,

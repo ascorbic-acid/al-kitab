@@ -1,121 +1,102 @@
 import { type Surah } from "../models/surah/surah_model";
 import { uGetSurahsUrls } from "../utils/surah_utils"
-import { Connection } from "jsstore";
-import workerInjector from 'jsstore/dist/worker_injector'
-import { openDB, type IDBPDatabase, type IDBPObjectStore } from 'idb';
-import { Dexie, type EntityTable } from 'dexie';
 import type { Ayah } from "~/models/ayah/ayah_model";
-import { version } from "vue";
-import { E } from "vitest/dist/chunks/reporters.6vxQttCV.js";
-import { fa } from "vuetify/locale";
+import { PGlite, IdbFs } from '@electric-sql/pglite'
+import { pg_trgm } from '@electric-sql/pglite/contrib/pg_trgm';
+import { openDB, deleteDB, wrap, unwrap } from 'idb';
+import AppDB from "./app_db";
 
 const DB_NAME = "alkitab_db"
 const DB_VERSION = 1
-const DB_QURAN_SAVE_ID = 1
 
-let db: Dexie;
+let db: PGlite;
+// let db: Dexie;
 let loadedSurahs: Surah[] = []
 export let loadCounter = 5
+
+
 export async function initSurahsApi() {
 
-  await createDB()
-  await loadAllSurahs()
+  await initDB()
+  // await loadAllSurahs()
 
 }
 
-async function createDB() {
-  db = new Dexie('SurahsDB') as Dexie & {
-    surahs: EntityTable<Ayah, 'number'>;
-  };
-  db.version(DB_VERSION).stores({
-    surahs: '++id, number, name',
-  })
+async function initDB() {
+  
+  const appDB = AppDB.Instance()
+
+  db = appDB.getDB()
+
+  // await appDB.setSettingsValue("lastOpened", new Date().toISOString())
+
+  const res = await appDB.getSettingsValue<String>("lastOpened")
+  // console.log("lastOpened: ", res?.length);
+
+  // console.log(await appDB.getAllSettings());
+  
+  // let quranSQLRes = await fetch("/quran.sql")
+  // let quranSql = await quranSQLRes.text()
+
+  // await db.exec(quranSql)
+  // console.log("db loaded by worker!")
 }
-
-function getDbSchema() {
-  var table = {
-    name: 'Surahs',
-    columns: {
-      id: {
-        primaryKey: true,
-        autoIncrement: true
-      },
-      number: {
-        dataType: 'number'
-      },
-      name: {
-        dataType: 'string'
-      },
-
-
-    }
-  }
-
-  var db = {
-    name: DB_NAME,
-    tables: [table]
-  }
-  return db;
-}
-
 
 async function loadAllSurahs() {
   let fetchedSurahs: Surah[] = []
-  let savedQuran = await db.surahs.get({ id: 1 })
 
-  if (!savedQuran) {
-    fetchedSurahs = await fetchSurahs()
+  let res = db.query("select * from Surah")
 
-    loadedSurahs = fetchedSurahs
-    db.surahs.put({ save_id: DB_QURAN_SAVE_ID, quran: fetchedSurahs })
-  } else {
-    if(savedQuran.save_id !== DB_QURAN_SAVE_ID) {
-      db.surahs.clear()
-      fetchedSurahs = await fetchSurahs()
-      loadedSurahs = fetchedSurahs
-      db.surahs.put({ save_id: DB_QURAN_SAVE_ID, quran: fetchedSurahs })
-    } else {
-      loadedSurahs = savedQuran.quran
-    }
-  }
+  console.log('loaded surahs: ', (await res).rows);
+
 
 
 }
 
-export async function fetchSurahs(): Promise<Surah[]> {
-  const urls = uGetSurahsUrls()
-  let loadTasks: Promise<Surah>[] = []
-  for (let url of urls) {
-    loadTasks.push(fetch(url).then(res => res.json()))
-  }
-  return await Promise.all(loadTasks)
-}
+export async function getSurah(number: number) : Promise<Surah | undefined> {
+  console.log("getSurah: ", number)
 
-// loadedSurahs = await db.surahs.toArray()
+  try {
+    let surahQuery = await db.query<Surah>(`
+        select number, name, english_name, english_name_translation, revelation_type, number_of_ayahs
+        from Surah
+        where number = ${number}
+    `)
 
-export async function getSurah(number: number) {
-  let surah = loadedSurahs.find((surah) => surah.number == number)
+    let ayahQuery = await db.query<Ayah>(`
+        select surah_number_fk, number, text, imlaei_simple_text, qpc_tajweed_text, number_in_surah,
+        juz, manzil, page, ruku, hizb_quarter, sajda
+  
+        from Ayah
+        where surah_number_fk = ${number}
+    `)
 
-  if (surah && surah.ayahs) {
-    surah.ayahs = surah.ayahs.map(ayah => {
-      return {
-        ...ayah,
-        hidden: false,
-        ayahWords: ayah.text.replace("\n", "").split(" ").map(word => {
+    if(surahQuery.rows.length > 0) {
+      let surah = surahQuery.rows[0]
+      surah!["ayahs"] = []
+
+      for(let ayah of ayahQuery.rows) {
+        ayah["hidden"] = false
+        ayah["ayahWords"] = ayah.text.replace("\n", "").split(" ").map(word => {
           return {
             hidden: false,
             word: word,
           }
         })
-        
+        surah!.ayahs.push(ayah)
       }
-    })
+      return surah
+    } else {
+      return undefined
+    }
+
+  } catch(e) {
+    console.error("Error fetching surah:", e)
   }
-  
-  return surah
 }
 
 export async function getSurahs(fields: string[]) {
+  console.log("getSurahs###########")
   const filteredSurahs = loadedSurahs.map(surah => {
     return surah
     // return fields.some(field => {
@@ -127,7 +108,7 @@ export async function getSurahs(fields: string[]) {
 }
 
 export async function searchSurahs(term: string) {
-  if(term.length < 2) return
+  if (term.length < 2) return
   const startTime = performance.now()
 
   let results = []
@@ -160,7 +141,7 @@ export async function searchSurahs(term: string) {
   console.log(`Search Took ${endTime - startTime} milliseconds for term: ${term}`);
   console.log("search: ", results);
   console.log('search amount ww: ', results.length);
-  
+
   return results
 }
 

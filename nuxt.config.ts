@@ -167,6 +167,7 @@ export default defineNuxtConfig({
   //     'VisualMapComponent',
   //   ],
   // },
+
   vite: {
     build: { sourcemap: false },
     optimizeDeps: {
@@ -176,6 +177,7 @@ export default defineNuxtConfig({
       allowedHosts: ["ktb.local"]
     }
   },
+  
   runtimeConfig: {
     github: {
       clientId: '',
@@ -187,5 +189,4 @@ export default defineNuxtConfig({
     },
   },
   ssr: false,
-  compatibilityDate: '2024-08-05',
 })

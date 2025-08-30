@@ -4,7 +4,6 @@ const route = useRoute()
 const title = computed(() => {
   return route.meta?.title || route.matched[0].meta?.title || ''
 })
-useAppStore().earlyInit()
 
 useHead({
   title,
@@ -21,7 +20,7 @@ useSeoMeta({
 })
 
 
-onMounted(() => { 
+onMounted(() => {   
   setTimeout(() => {
     theme.global.name.value = 'dark'
     console.log('dart');
