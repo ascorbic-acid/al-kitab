@@ -5,6 +5,7 @@ import { PGlite, IdbFs } from '@electric-sql/pglite'
 import { pg_trgm } from '@electric-sql/pglite/contrib/pg_trgm';
 import { openDB, deleteDB, wrap, unwrap } from 'idb';
 import AppDB from "./app_db";
+import { query } from "@electric-sql/pglite/template";
 
 const DB_NAME = "alkitab_db"
 const DB_VERSION = 1
@@ -42,20 +43,7 @@ async function initDB() {
   // console.log("db loaded by worker!")
 }
 
-async function loadAllSurahs() {
-  let fetchedSurahs: Surah[] = []
-
-  let res = db.query("select * from Surah")
-
-  console.log('loaded surahs: ', (await res).rows);
-
-
-
-}
-
 export async function getSurah(number: number) : Promise<Surah | undefined> {
-  console.log("getSurah: ", number)
-
   try {
     let surahQuery = await db.query<Surah>(`
         select number, name, english_name, english_name_translation, revelation_type, number_of_ayahs
@@ -77,7 +65,7 @@ export async function getSurah(number: number) : Promise<Surah | undefined> {
 
       for(let ayah of ayahQuery.rows) {
         ayah["hidden"] = false
-        ayah["ayahWords"] = ayah.text.replace("\n", "").split(" ").map(word => {
+        ayah["ayah_words"] = ayah.text.replace("\n", "").split(" ").map(word => {
           return {
             hidden: false,
             word: word,
@@ -89,19 +77,14 @@ export async function getSurah(number: number) : Promise<Surah | undefined> {
     } else {
       return undefined
     }
-
   } catch(e) {
     console.error("Error fetching surah:", e)
   }
 }
 
 export async function getSurahs(fields: string[]) {
-  console.log("getSurahs###########")
   const filteredSurahs = loadedSurahs.map(surah => {
     return surah
-    // return fields.some(field => {
-    //   return field in surah;
-    // });
   })
 
   return filteredSurahs
@@ -113,36 +96,25 @@ export async function searchSurahs(term: string) {
 
   let results = []
 
-  for (let i = 0; i < loadedSurahs.length; i++) {
-    const surah = loadedSurahs[i]
 
-    for (let j = 0; j < surah!.ayahs.length; j++) {
-      const ayah = surah!.ayahs[j]
-      const clearText = sanitize(ayah!.text)
+  let ayahQuery = await db.query<Ayah>(`
+    select s.number surah_number, s.name surah_name, a.text, a.number_in_surah
+    from Ayah a
 
-      if (clearText.includes(term)) {
-        // console.warn(`Surah: ${surah?.name} | Ayah (${ayah?.numberInSurah}): ${ayah?.text} | Clear Text: ${clearText}`);
-        results.push({
-          surah: {
-            name: surah?.name,
-            number: surah?.number
-          },
-          ayah: {
-            numberInSurah: ayah?.numberInSurah,
-            text: ayah?.text
-          }
-        })
-      }
-    }
+    inner join Surah s
+    on s.number = a.surah_number_fk
 
-  }
+    where imlaei_simple_text like '%${term}%'
+  `)
+  
+
   const endTime = performance.now()
 
   console.log(`Search Took ${endTime - startTime} milliseconds for term: ${term}`);
-  console.log("search: ", results);
-  console.log('search amount ww: ', results.length);
+  console.log("search: ", ayahQuery.rows);
+  console.log('search amount ww: ', ayahQuery.rows.length);
 
-  return results
+  return ayahQuery.rows
 }
 
 const ARABIC_DIACRITICS = [

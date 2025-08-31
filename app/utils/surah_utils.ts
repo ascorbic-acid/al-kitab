@@ -115,14 +115,14 @@ export async function uGoToAyah(ayahNumber: number, surahNumber: number, appStor
     if (appStore.loadedSurah?.number === surahNumber) {
         uScrollToAyah(ayahNumber)
         uGlowAyah(ayahNumber)
-        await uSleep(2)
+        await uSleep(2000)
         uUnglowAyah(ayahNumber)
       } else {
         await appStore.loadSurah(surahNumber)
-        await uSleep(0.5)
+        await uSleep(500)
         uScrollToAyah(ayahNumber)
         uGlowAyah(ayahNumber)
-        await uSleep(2)
+        await uSleep(2000)
         uUnglowAyah(ayahNumber)
       }
 }

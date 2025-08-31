@@ -33,7 +33,7 @@ export const useAppStore = defineStore("appStore", () => {
     for (let i = startFromIdx; i < loadedSurah!.value!.ayahs.length; i++) {
       const ayah = loadedSurah.value!.ayahs[i]
       ayah!.hidden = true
-      for (let word of loadedSurah!.value!.ayahs[i]!.ayahWords) {
+      for (let word of loadedSurah!.value!.ayahs[i]!.ayah_words) {
         word.hidden = true
       }
     }
@@ -48,7 +48,7 @@ export const useAppStore = defineStore("appStore", () => {
     }
 
     if (showWholeAyah) {
-      for (let word of loadedSurah!.value!.ayahs[nextIdx]!.ayahWords) {
+      for (let word of loadedSurah!.value!.ayahs[nextIdx]!.ayah_words) {
         if(word.hidden) {
           word.hidden = false
         }
@@ -56,13 +56,13 @@ export const useAppStore = defineStore("appStore", () => {
       loadedSurah!.value!.ayahs[nextIdx]!.hidden = false
     }
     else {      
-      for (let word of loadedSurah!.value!.ayahs[nextIdx]!.ayahWords) {
+      for (let word of loadedSurah!.value!.ayahs[nextIdx]!.ayah_words) {
         if(word.hidden) {
           word.hidden = false
           break
         }
       }
-      if(!loadedSurah!.value!.ayahs[nextIdx]!.ayahWords.some(el => el.hidden)) {
+      if(!loadedSurah!.value!.ayahs[nextIdx]!.ayah_words.some(el => el.hidden)) {
         loadedSurah!.value!.ayahs[nextIdx]!.hidden = false
       }
     }
@@ -84,13 +84,9 @@ export const useAppStore = defineStore("appStore", () => {
   // direct top call from app.vue
   // TODO: find better early place to preload "head script"?
   async function earlyInit(_worker: Worker) {
-    // TODO: better way with settings
-    (window as any)['alkitab'] = {
-      version: AppConfig.VERSION
-    }
-    
+
     wwLink.value! = wrap(_worker)
-    
+
     setTimeout(() => {
       if (!import.meta.dev) {
         loadSurah(1)

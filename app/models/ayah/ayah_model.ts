@@ -4,16 +4,19 @@ export interface AyahWords {
 }
 
 export interface Ayah {
+    surah_number_fk: number,
     number: number,
     hidden?: boolean,
     text: string,
-    ayahWords: AyahWords[],
-    numberInSurah: number,
+    imlaei_simple_text: string,
+    qpc_tajweed_text: string,
+    ayah_words: AyahWords[],
+    number_in_surah: number,
     juz: number,
     manzil: number,
     page: number,
     ruku: number,
-    hizbQuarter: number,
+    hizb_quarter: number,
     sajda: boolean
 }
 

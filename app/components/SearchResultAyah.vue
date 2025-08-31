@@ -1,23 +1,35 @@
 <template>
     <div class="ayah__span" :style="{ 'font-size': `clamp(1rem, ${fontSize}, 4rem)`, 'cursor': 'pointer' }"
-        :kbt-ayah-nr="props.ayah.numberInSurah" :id="`akb-ayah-nr__${props.ayah.numberInSurah}`">
+        :kbt-ayah-nr="props.item.number_in_surah" :id="`akb-ayah-nr__${props.item.number_in_surah}`">
 
-        <template style="display: inline-block;" v-for="word, idx in props.ayah.text.split(' ')">
-            <p :kbt-ayah-nr="props.ayah.numberInSurah" style="display: inline;">{{ " " + word + " " }}</p>
+        <template style="display: inline-block;" v-for="word, idx in props.item.text.split(' ')">
+            <p :kbt-ayah-nr="props.item.number_in_surah" style="display: inline;">{{ " " + word + " " }}</p>
         </template>
 
         <div class="ayah-num-icon__container" >
             <img class="ayah-num-icon__icon" src="/icons/ayah.svg" :style="{'width': `${ayahNumFontSize!+15}px`}" />
-            <span class="ayah-num-icon__text-num" :style="{'font-size': `${ayahNumFontSize}px`}" >{{ props.ayah.numberInSurah }}</span>
+            <span class="ayah-num-icon__text-num" :style="{'font-size': `${ayahNumFontSize}px`}" >{{ props.item.number_in_surah }}</span>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import type { AyahSearchResult } from "~/models/ayah/ayah_search_result"
 import { useAppStore } from "~/stores/app_store"
 
 // import { Tajweed } from 'tajweed';
-const props = defineProps(['ayah', 'fontSize'])
+const props = defineProps(
+    {
+        item: {
+            type: Object as PropType<AyahSearchResult>,
+            required: true
+        },
+        fontSize: {
+            type: Number,
+            required: true
+        } 
+    }
+)
 const appStore = useAppStore()
 
 // let parseTajweed = new Tajweed()

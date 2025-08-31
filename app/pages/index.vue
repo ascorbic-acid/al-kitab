@@ -1,9 +1,6 @@
 <template>
   <v-container>
     <QuranSearch />
-    <v-btn @click="create_db">Create DB</v-btn>
-    <v-btn @click="test_db">Test DB</v-btn>
-
     <div v-if="true">
       <v-row>
         <v-col md="10">
@@ -31,7 +28,7 @@
             <v-skeleton-loader v-if="appStore.loading" class="mx-auto border" type="article"></v-skeleton-loader>
 
             <template v-if="appStore.loadedSurah && !appStore.loading" v-for="ayah, idx in appStore.loadedSurah.ayahs"
-              :key="ayah.numberInSurah">
+              :key="ayah.number_in_surah">
               <Ayah :idx="idx" :ayah="ayah" :font-size="appStore.fontSize" />
             </template>
           </div>

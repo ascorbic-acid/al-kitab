@@ -1,10 +1,6 @@
 export interface AyahSearchResult {
-    surah: {
-        name: string,
-        number: number
-    },
-    ayah: {
-        numberInSurah: number,
-        text: string
-    }
+    surah_number: number
+    surah_name: string
+    text: string
+    number_in_surah: number
 }

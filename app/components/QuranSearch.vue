@@ -2,7 +2,7 @@
     <v-dialog v-model="dialog" opacity="0" width="500" max-height="85%" min-height="55%">
         <div>
             <v-text-field @update:model-value="search" append-inner-icon="mdi-magnify" label="ابحث في ايات القران"
-                hide-details full-width bg-color="#87878770" clearable>
+                hide-details full-width bg-color="#87878770" clearable @click:clear="search = ''">
                 <template></template>
             </v-text-field>
         </div>
@@ -12,30 +12,30 @@
                     النتائج: {{ items.length }}
                 </v-chip>
                 <br>
-                <p v-if="items.length < 1 && !searching" class="text-center">لاتوجد نتائج بحث, أكتب كلمة من اربع احرف او اكثر</p>
+                <p v-if="items.length < 1 && !searching" class="text-center">لاتوجد نتائج بحث, أكتب كلمة من اربع احرف او
+                    اكثر
+                </p>
             </div>
             <div class="text-center" v-if="searching">
                 <v-progress-circular :width="3" color="orange" indeterminate></v-progress-circular>
             </div>
             <div class="me-1 ms-3" style="height: 60vh;">
-
                 <v-virtual-scroll v-if="!searching" :items="items" height="98%" item-height="100">
                     <template v-slot:default="{ item }">
                         <v-card @click="searchSelect(item)" variant="text" class="hover-highlight"
                             style="background-color: #dfdfdf;">
                             <div class="mx-2 my-3">
                                 <v-chip label size="small">
-                                    <p style="font-size: 14px;">{{ item.surah.name }}</p>
+                                    <p style="font-size: 14px;">{{ item.surah_name }}</p>
                                 </v-chip>
                             </div>
                             <div class="mx-5 my-2">
-                                <SearchResultAyah :ayah="item.ayah" :font-size="20" />
+                                <SearchResultAyah :item="item" :font-size="20" />
                             </div>
                         </v-card>
                         <div class="mb-3"></div>
                     </template>
                 </v-virtual-scroll>
-
             </div>
         </v-card>
     </v-dialog>
@@ -50,37 +50,24 @@ const appStore = useAppStore()
 let searching = ref(false)
 
 let dialog = ref(false)
-// let search = ref('')
 let items = shallowRef<AyahSearchResult[]>([
     {
-        surah: {
-            name: "سُورَةُ الفُرۡقَانِ",
-            number: 25
-        },
-        ayah: {
-            numberInSurah: 71,
-            text: "وَمَن تَابَ وَعَمِلَ صَـٰلِحࣰا فَإِنَّهُۥ یَتُوبُ إِلَى ٱللَّهِ مَتَابࣰا"
-        }
+        surah_number: 25,
+        surah_name: "سُورَةُ الفُرۡقَانِ",
+        text: "وَمَن تَابَ وَعَمِلَ صَـٰلِحࣰا فَإِنَّهُۥ یَتُوبُ إِلَى ٱللَّهِ مَتَابࣰا",
+        number_in_surah: 71
     },
     {
-        surah: {
-            name: "سُورَةُ المُؤۡمِنُونَ",
-            number: 23
-        },
-        ayah: {
-            numberInSurah: 61,
-            text: "أُو۟لَـٰۤىِٕكَ یُسَـٰرِعُونَ فِی ٱلۡخَیۡرَ ٰ⁠تِ وَهُمۡ لَهَا سَـٰبِقُونَ"
-        }
+        surah_number: 23,
+        surah_name: "سُورَةُ المُؤۡمِنُونَ",
+        text: "أُو۟لَـٰۤىِٕكَ یُسَـٰرِعُونَ فِی ٱلۡخَیۡرَ ٰ⁠تِ وَهُمۡ لَهَا سَـٰبِقُونَ",
+        number_in_surah: 61
     },
     {
-        surah: {
-            name: "سُورَةُ البَقَرَةِ",
-            number: 2
-        },
-        ayah: {
-            numberInSurah: 285,
-            text: "ءَامَنَ ٱلرَّسُولُ بِمَاۤ أُنزِلَ إِلَیۡهِ مِن رَّبِّهِۦ وَٱلۡمُؤۡمِنُونَۚ كُلٌّ ءَامَنَ بِٱللَّهِ وَمَلَـٰۤىِٕكَتِهِۦ وَكُتُبِهِۦ وَرُسُلِهِۦ لَا نُفَرِّقُ بَیۡنَ أَحَدࣲ مِّن رُّسُلِهِۦۚ وَقَالُوا۟ سَمِعۡنَا وَأَطَعۡنَاۖ غُفۡرَانَكَ رَبَّنَا وَإِلَیۡكَ ٱلۡمَصِیرُ"
-        }
+        surah_number: 2,
+        surah_name: "سُورَةُ البَقَرَةِ",
+        text: "ءَامَنَ ٱلرَّسُولُ بِمَاۤ أُنزِلَ إِلَیۡهِ مِن رَّبِّهِۦ وَٱلۡمُؤۡمِنُونَۚ كُلٌّ ءَامَنَ بِٱللَّهِ وَمَلَـٰۤىِٕكَتِهِۦ وَكُتُبِهِۦ وَرُسُلِهِۦ لَا نُفَرِّقُ بَیۡنَ أَحَدࣲ مِّن رُّسُلِهِۦۚ وَقَالُوا۟ سَمِعۡنَا وَأَطَعۡنَاۖ غُفۡرَانَكَ رَبَّنَا وَإِلَیۡكَ ٱلۡمَصِیرُ",
+        number_in_surah: 285
     }
 ])
 
@@ -103,20 +90,14 @@ let dbcSearch = useDebounceFn(async (term: string) => {
 async function searchSelect(result: AyahSearchResult) {
     onMenuClose(true)
     setTimeout(() => {
-        uGoToAyah(result.ayah.numberInSurah, result.surah.number, appStore)
+        uGoToAyah(result.number_in_surah, result.surah_number, appStore)
     }, 500)
 }
-
-// const filteredItems = computed(() => {
-//     return items.value.filter(item => {
-//         return item.title.toLowerCase().includes(search.value.toLowerCase());
-//     });
-// })
 
 function onMenuOpen(_data: any) {
     dialog.value = true
     document.querySelector(".v-application__wrap")!.style = "filter: blur(5px)"
-    // search("من")
+    // search("تبارك")
 }
 
 function onMenuClose(value: boolean) {
@@ -139,19 +120,15 @@ $listen('search-dialog', (_data: any) => {
 <style scoped>
 .v-dialog {
     opacity: 0.8;
-    /* Increased transparency */
 }
 
 .hover-highlight:hover {
     background-color: rgba(0, 0, 0, 0.1);
-    /* Highlight effect on hover */
 }
 
 .blur-background {
     filter: blur(10px);
-    /* Apply blur effect */
     transition: filter 0.3s ease;
-    /* Smooth transition */
 }
 
 .ayah-num-icon__container {
@@ -165,9 +142,7 @@ $listen('search-dialog', (_data: any) => {
 
 .ayah-num-icon__icon {
     /* width: 100px; */
-    /* Adjust size as needed */
     /* height: 100px; */
-    /* Adjust size as needed */
 }
 
 .ayah-num-icon__text-num {
@@ -177,7 +152,6 @@ $listen('search-dialog', (_data: any) => {
     transform: translate(-50%, -56%);
     color: rgb(0, 0, 0);
     /* font-weight: bold; */
-    /* Change text color as needed */
     text-align: center;
 }
 </style>
