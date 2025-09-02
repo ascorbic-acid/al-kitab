@@ -1,8 +1,7 @@
-export default class CustomStorage {
+export default class lStore {
     static read(key: string) : string | null {
         const res = localStorage.getItem(key)
         if(res) {
-            // return JSON.parse(res);
             return res
         } else {
             return null

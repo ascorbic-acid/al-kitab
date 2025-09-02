@@ -30,6 +30,7 @@ export default class AppDB {
         // init or load existing db
         this.db = new PGlite('idb://alkitab_db', { extensions: { pg_trgm } });
         this.createDBSinglesTable();
+        this.insertSettingsSingle();
         console.log("AppDB initialized");
         
     }
@@ -37,6 +38,11 @@ export default class AppDB {
     public createDBSinglesTable() {
         this.db!.exec(`
             CREATE TABLE IF NOT EXISTS Singles (id INTEGER PRIMARY KEY, name TEXT, json JSONB);
+        `);
+    }
+
+    public insertSettingsSingle() {
+        this.db!.exec(`
             INSERT INTO Singles (id, name, json) VALUES (1, 'settings', '{}') ON CONFLICT (id) DO NOTHING;
         `);
     }

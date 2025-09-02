@@ -18,7 +18,7 @@
           </template>
 
           <div v-else class="reading-card mx-0 mt-3"
-            :style="{ 'background-color': theme.global.name.value == 'light' ? '#dfdfdf' : '#2d2d2d' }">
+            :style="{ 'background-color': appStore.config?.dark_mode ? '#2d2d2d' : '#dfdfdf' }">
             <h3
               v-if="appStore.loadedSurah?.number !== 9 && appStore.loadedSurah && !appStore.loading && appStore.loadedSurah?.number !== 500"
               class="text-center mb-3 mt-5" style="font-family: Kitab; font-size: 25px;">بِسۡمِ ٱللَّهِ ٱلرَّحۡمَـٰنِ
@@ -74,7 +74,6 @@ async function test_db() {
 }
 
 onMounted(async () => {
-  theme.global.name.value = 'dark'
 })
 
 </script>

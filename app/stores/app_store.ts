@@ -2,13 +2,20 @@ import { useWindowSize } from '@vueuse/core'
 import type { Surah } from "~/models/surah/surah_model";
 import type { Ayah, MarkedAyahData } from "~/models/ayah/ayah_model";
 import { wrap, type Remote } from "comlink";
-import { AppConfig } from '~/service-worker/config';
+import lStore from "~/utils/lstore";
+
+interface Config {
+  dark_mode: boolean
+  db_version: number
+  last_opened_surah: number
+}
 
 export const useAppStore = defineStore("appStore", () => {
   // const snackbar = useSnackbar();
   const { width } = useWindowSize()
   let loading = ref<boolean>(false)
   let drawer = ref(false)
+  let config = ref<Config>()
   let settingsDrawer = ref(false)
   let loadedSurah = ref<Surah>()
   let loadedMarkedAyahData = ref<MarkedAyahData[]>()
@@ -69,7 +76,20 @@ export const useAppStore = defineStore("appStore", () => {
 
   }
 
+  function getConfig() {
+    return config.value;
+  }
+
+  function setConfig(_config: Config) {
+    config.value = {
+      ...config.value,
+      ..._config
+    };
+    lstore.write("config", JSON.stringify(_config));
+  }
+
   onBeforeMount(async () => {
+   
   })
 
   onMounted(async () => {
@@ -81,9 +101,26 @@ export const useAppStore = defineStore("appStore", () => {
     }
   })
 
-  // direct top call from app.vue
-  // TODO: find better early place to preload "head script"?
-  async function earlyInit(_worker: Worker) {
+  // from app:created hook plugin
+  async function earlyInit() {
+    
+    // load appconfig
+    const data = lstore.read("config");
+    if (data) {
+      config.value = JSON.parse(data);
+    } else {
+      config.value = {
+        dark_mode: false,
+        db_version: 1,
+        last_opened_surah: 1
+      };
+      lstore.write("config", JSON.stringify(config.value));
+    }
+
+    const _worker = new Worker(
+      new URL('~/workers/main_worker.ts', import.meta.url), {
+      type: 'module',
+    })
 
     wwLink.value! = wrap(_worker)
 
@@ -101,6 +138,7 @@ export const useAppStore = defineStore("appStore", () => {
   return {
     // variables
     loading,
+    config,
     drawer,
     settingsDrawer,
     loadedMarkedAyahData,
@@ -115,6 +153,8 @@ export const useAppStore = defineStore("appStore", () => {
     // getMarkedAyahData,
     // markAyah,
     // scrollToAyah
+    getConfig,
+    setConfig,
     earlyInit
   }
 

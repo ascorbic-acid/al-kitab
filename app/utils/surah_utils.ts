@@ -2,7 +2,7 @@
 import quranSurahs from "~/assets/quran-surahs.json"
 import type { Surah } from "~/models/surah/surah_model";
 import type { MarkedAyahData } from "~/models/ayah/ayah_model";
-import CustomStorage from "./custom_storage";
+import CustomStorage from "./lstore";
 import { SURA_IDS } from "./enums/surahs_ids"
 import { type Store } from "pinia"
 // const snackbar = useSnackbar();
