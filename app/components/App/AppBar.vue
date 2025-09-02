@@ -112,12 +112,4 @@ const breadcrumbs = computed(() => {
 onMounted(() => {
   // $event("search-dialog", {})
 })
-// const isDark = computed({
-//   get() {
-//     return theme.global.name.value === 'dark' ? true : false
-//   },
-//   set(v) {
-//     theme.global.name.value = v ? 'dark' : 'light'
-//   },
-// })
 </script>
