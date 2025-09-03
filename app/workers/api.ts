@@ -1,43 +1,52 @@
 import { type Surah } from "../models/surah/surah_model";
-import { uGetSurahsUrls } from "../utils/surah_utils"
 import type { Ayah } from "~/models/ayah/ayah_model";
 import { PGlite, IdbFs } from '@electric-sql/pglite'
 import { pg_trgm } from '@electric-sql/pglite/contrib/pg_trgm';
 import { openDB, deleteDB, wrap, unwrap } from 'idb';
 import AppDB from "./app_db";
-import { query } from "@electric-sql/pglite/template";
+import type { Config } from "~/models/config/config_model";
+import { IDBService } from "~/services/idb_service";
 
-const DB_NAME = "alkitab_db"
-const DB_VERSION = 1
+const DB_VERSION = 5
 
-let db: PGlite;
-// let db: Dexie;
-let loadedSurahs: Surah[] = []
-export let loadCounter = 5
+let db: PGlite
+let appDB: AppDB
+let config: Config
+let loadedSurahs: Surah[] = [] // Remove
 
 
-export async function initSurahsApi() {
-
-  await initDB()
-  // await loadAllSurahs()
+export async function init(_config: Config) {
+  console.log("Initializing API with config:", _config);
+   let idbSvc = IDBService.getInstance();
+console.log("from WW", await idbSvc.get("app-config"));
+  config = _config
+  initPGLite()
 
 }
 
-async function initDB() {
+async function initPGLite() {
   
-  const appDB = AppDB.Instance()
-
+  appDB = AppDB.Instance()
   db = appDB.getDB()
 
-  const res = await appDB.getSettingsValue<String>("lastOpened")
 
+  if(DB_VERSION > config.db_version) {
+    console.log("loading and restoring quran.sql...")
+
+    // first we delete all indexeddbs by looping on them and delete them
+    const dbs = await indexedDB.databases();
+    for (const db of dbs) {
+      // await deleteDB(db.name);
+      console.log(`del: ${db.name}`);
+    }
+
+    let quranSQLRes = await fetch("/quran.sql")
+    let quranSql = await quranSQLRes.text()
   
+    await db.exec(quranSql)
+    console.log("db recreated from quran.sql!")
+  }
 
-  // let quranSQLRes = await fetch("/quran.sql")
-  // let quranSql = await quranSQLRes.text()
-
-  // await db.exec(quranSql)
-  // console.log("db loaded by worker!")
 }
 
 export async function getSurah(number: number) : Promise<Surah | undefined> {

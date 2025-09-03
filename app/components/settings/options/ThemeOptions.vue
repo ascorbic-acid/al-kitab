@@ -2,7 +2,7 @@
     <div style="display: flex; justify-content: space-between;">
         <div>
             <h4 >تفعيل الوضع اليلي</h4>
-            <p style="color: gray">يساعد على النظر</p>
+            <p style="color: gray">يساعد على النظر</p> <span>{{ darkMode }}</span>
         </div>
 
         <div>
@@ -14,32 +14,37 @@
 </template>
 
 <script setup lang="ts">
+import { SettingsService } from '~/services/settings_service';
+
+
 const { t } = useI18n()
 const theme = useTheme()
-const appStore = useAppStore()
+const nuxtApp = useNuxtApp()
 
+console.log(nuxtApp.$sl.GetService(SettingsService));
+
+
+const darkMode = toRef(1)
 
 
 
 const model = computed({
-    get() {
-        if(appStore.config?.dark_mode) {
-            theme.change("dark")
-        } else {
+    async get() {
+        
+        if(darkMode) {
             theme.change("light")
+        } else {
+            theme.change("dark")
         }
-        return appStore.config?.dark_mode
+        return darkMode
     },
-    set(value) {
-        appStore.setConfig({
-            dark_mode: value
-        } as any)
-
-        if(value) {
+    async set(value) {
+        if(await value) {
             theme.change("dark")
         } else {
             theme.change("light")
         }
+        // appConfig.setConfig({dark_mode: value} as any)
     }
 })
 

@@ -19,6 +19,9 @@ useSeoMeta({
   twitterCard: 'summary_large_image',
 })
 
+onBeforeMount(() => {
+  useAppStore().earlyInit()
+})
 
 onMounted(() => {   
 
