@@ -4,6 +4,8 @@ import type { Ayah, MarkedAyahData } from "~/models/ayah/ayah_model";
 import { wrap, type Remote } from "comlink";
 import lStore from "~/utils/lstore";
 import type { Config } from '~/models/config/config_model';
+import { Locator } from '~/services/locator';
+
 
 export const useAppStore = defineStore("appStore", () => {
   // const snackbar = useSnackbar();
@@ -28,9 +30,7 @@ export const useAppStore = defineStore("appStore", () => {
     }
   }
 
-
   async function hideAyahsStartFromIdx(startFromIdx: number) {
-
     for (let i = startFromIdx; i < loadedSurah!.value!.ayahs.length; i++) {
       const ayah = loadedSurah.value!.ayahs[i]
       ayah!.hidden = true
@@ -50,30 +50,25 @@ export const useAppStore = defineStore("appStore", () => {
 
     if (showWholeAyah) {
       for (let word of loadedSurah!.value!.ayahs[nextIdx]!.ayah_words) {
-        if(word.hidden) {
+        if (word.hidden) {
           word.hidden = false
         }
       }
       loadedSurah!.value!.ayahs[nextIdx]!.hidden = false
     }
-    else {      
+    else {
       for (let word of loadedSurah!.value!.ayahs[nextIdx]!.ayah_words) {
-        if(word.hidden) {
+        if (word.hidden) {
           word.hidden = false
           break
         }
       }
-      if(!loadedSurah!.value!.ayahs[nextIdx]!.ayah_words.some(el => el.hidden)) {
+      if (!loadedSurah!.value!.ayahs[nextIdx]!.ayah_words.some(el => el.hidden)) {
         loadedSurah!.value!.ayahs[nextIdx]!.hidden = false
       }
     }
 
   }
-
-
-  onBeforeMount(async () => {
-
-  })
 
   onMounted(async () => {
     // TODO: move to better place
