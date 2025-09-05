@@ -3,6 +3,8 @@ import type { Surah } from "~/models/surah/surah_model";
 import type { Ayah, MarkedAyahData } from "~/models/ayah/ayah_model";
 import { wrap, type Remote } from "comlink";
 import lStore from "~/utils/lstore";
+import type { Locator } from '~/services/locator';
+import MainWorkerService from '~/services/mw_service';
 
 interface Config {
   dark_mode: boolean
@@ -15,17 +17,29 @@ export const useAppStore = defineStore("appStore", () => {
   const { width } = useWindowSize()
   let loading = ref<boolean>(false)
   let drawer = ref(false)
-  let config = ref<Config>()
   let settingsDrawer = ref(false)
   let loadedSurah = ref<Surah>()
   let loadedMarkedAyahData = ref<MarkedAyahData[]>()
   let fontSize = ref(50)
-  let wwLink = ref<Remote<any>>();
+  let sl = inject<Locator>("sl")
+  let mwSvc: MainWorkerService
+
+  async function init(sl: Locator) {
+    mwSvc = sl!.get(MainWorkerService)!
+
+    setTimeout(() => {
+      if (!import.meta.dev) {
+        loadSurah(1)
+      } else {
+        loadSurah(500)
+      }
+    }, 500)
+  }
 
   async function loadSurah(number: number) {
     try {
       loading.value = true
-      loadedSurah.value = await wwLink.value!.api.getSurah(number)
+      loadedSurah.value = mwSvc.remote.api.getSurah(number)
       console.log(loadedSurah)
       loading.value = false
     } catch (e) {
@@ -56,40 +70,28 @@ export const useAppStore = defineStore("appStore", () => {
 
     if (showWholeAyah) {
       for (let word of loadedSurah!.value!.ayahs[nextIdx]!.ayah_words) {
-        if(word.hidden) {
+        if (word.hidden) {
           word.hidden = false
         }
       }
       loadedSurah!.value!.ayahs[nextIdx]!.hidden = false
     }
-    else {      
+    else {
       for (let word of loadedSurah!.value!.ayahs[nextIdx]!.ayah_words) {
-        if(word.hidden) {
+        if (word.hidden) {
           word.hidden = false
           break
         }
       }
-      if(!loadedSurah!.value!.ayahs[nextIdx]!.ayah_words.some(el => el.hidden)) {
+      if (!loadedSurah!.value!.ayahs[nextIdx]!.ayah_words.some(el => el.hidden)) {
         loadedSurah!.value!.ayahs[nextIdx]!.hidden = false
       }
     }
 
   }
 
-  function getConfig() {
-    return config.value;
-  }
-
-  function setConfig(_config: Config) {
-    config.value = {
-      ...config.value,
-      ..._config
-    };
-    lstore.write("config", JSON.stringify(_config));
-  }
-
   onBeforeMount(async () => {
-   
+
   })
 
   onMounted(async () => {
@@ -101,61 +103,21 @@ export const useAppStore = defineStore("appStore", () => {
     }
   })
 
-  // from app:created hook plugin
-  async function earlyInit() {
-    
-    // load appconfig
-    const data = lstore.read("config");
-    if (data) {
-      config.value = JSON.parse(data);
-    } else {
-      config.value = {
-        dark_mode: false,
-        db_version: 1,
-        last_opened_surah: 1
-      };
-      lstore.write("config", JSON.stringify(config.value));
-    }
-
-    const _worker = new Worker(
-      new URL('~/workers/main_worker.ts', import.meta.url), {
-      type: 'module',
-    })
-
-    wwLink.value! = wrap(_worker)
-
-    setTimeout(() => {
-      if (!import.meta.dev) {
-        loadSurah(1)
-      } else {
-        loadSurah(1)
-      }
-    }, 500)
-
-  }
-
 
   return {
     // variables
     loading,
-    config,
     drawer,
     settingsDrawer,
     loadedMarkedAyahData,
     loadedSurah,
-    wwLink,
     fontSize,
 
     // methods
+    init,
     loadSurah,
     hideAyahsStartFromIdx,
-    showNextHiddenAyah,
-    // getMarkedAyahData,
-    // markAyah,
-    // scrollToAyah
-    getConfig,
-    setConfig,
-    earlyInit
+    showNextHiddenAyah
   }
 
 });

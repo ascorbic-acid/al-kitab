@@ -11,19 +11,10 @@ const DB_NAME = "alkitab_db"
 const DB_VERSION = 1
 
 let db: PGlite;
-// let db: Dexie;
 let loadedSurahs: Surah[] = []
-export let loadCounter = 5
 
 
-export async function initSurahsApi() {
-
-  await initDB()
-  // await loadAllSurahs()
-
-}
-
-async function initDB() {
+export async function initDB() {
   
   const appDB = AppDB.Instance()
 
