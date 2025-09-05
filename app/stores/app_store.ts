@@ -31,7 +31,7 @@ export const useAppStore = defineStore("appStore", () => {
       if (!import.meta.dev) {
         loadSurah(1)
       } else {
-        loadSurah(500)
+        loadSurah(1)
       }
     }, 500)
   }
@@ -39,7 +39,7 @@ export const useAppStore = defineStore("appStore", () => {
   async function loadSurah(number: number) {
     try {
       loading.value = true
-      loadedSurah.value = mwSvc.remote.api.getSurah(number)
+      loadedSurah.value = await mwSvc.getSurah(number)
       console.log(loadedSurah)
       loading.value = false
     } catch (e) {

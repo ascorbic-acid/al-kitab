@@ -1,3 +1,17 @@
+<template>
+  <v-app>
+    <AppDrawer />
+    <SettingsDrawer />
+    <AppBar />
+    <v-main>
+      <VitePwaManifest />
+      <NuxtPage />
+      <NuxtSnackbar />
+    </v-main>
+    <!-- <AppFooter /> -->
+  </v-app>
+</template>
+
 <script setup lang="ts">
 const theme = useTheme()
 const route = useRoute()
@@ -19,25 +33,12 @@ useSeoMeta({
   twitterCard: 'summary_large_image',
 })
 
-
 onMounted(() => {   
 
 })
 </script>
 
-<template>
-  <v-app>
-    <AppDrawer />
-    <SettingsDrawer />
-    <AppBar />
-    <v-main>
-      <VitePwaManifest />
-      <NuxtPage />
-      <NuxtSnackbar />
-    </v-main>
-    <!-- <AppFooter /> -->
-  </v-app>
-</template>
+
 
 <style scoped>
 .v-main {

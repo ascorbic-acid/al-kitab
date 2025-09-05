@@ -4,7 +4,7 @@ import type { Ayah } from "~/models/ayah/ayah_model";
 import { PGlite, IdbFs } from '@electric-sql/pglite'
 import { pg_trgm } from '@electric-sql/pglite/contrib/pg_trgm';
 import { openDB, deleteDB, wrap, unwrap } from 'idb';
-import AppDB from "./app_db";
+import AppDB from "./pglite_db";
 import { query } from "@electric-sql/pglite/template";
 
 const DB_NAME = "alkitab_db"
@@ -16,11 +16,10 @@ let loadedSurahs: Surah[] = []
 
 export async function initDB() {
   
-  const appDB = AppDB.Instance()
+  const pgLite = AppDB.Instance()
+  db = pgLite.getDB()
 
-  db = appDB.getDB()
-
-  const res = await appDB.getSettingsValue<String>("lastOpened")
+  const res = await pgLite.getSettingsValue<String>("lastOpened")
 
   
 
@@ -28,7 +27,7 @@ export async function initDB() {
   // let quranSql = await quranSQLRes.text()
 
   // await db.exec(quranSql)
-  // console.log("db loaded by worker!")
+  console.log("db loaded by worker!")
 }
 
 export async function getSurah(number: number) : Promise<Surah | undefined> {
