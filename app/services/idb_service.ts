@@ -1,7 +1,5 @@
-import { openDB, type IDBPDatabase,  } from 'idb';
-import type { IService } from './locator';
-import type ServiceLocator from './locator';
-
+import type { IService } from "~/models/locator/locator_iservice";
+import type { Locator } from "./locator";
 
 export default class IDBService implements IService {
   private db: IDBDatabase | null = null;
@@ -39,12 +37,12 @@ export default class IDBService implements IService {
   serviceMember(): void {
     throw new Error('Method not implemented.');
   }
-  async initSvc(sl: ServiceLocator): Promise<void> {
+  async init(sl: Locator): Promise<void> {
     await this.initPromise
     console.log();
   
   }
-  disposeSvc(): void {
+  dispose(): void {
     throw new Error('Method not implemented.');
   }
 

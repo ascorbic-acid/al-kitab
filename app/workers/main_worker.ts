@@ -1,13 +1,22 @@
-import { expose } from "comlink";
-import { getSurahs } from "./api"
-import { type Surah } from "../models/surah/surah_model";
-import { init, getSurah, searchSurahs } from "./api";
-// import { search_surah } from "./search";
+import { expose, wrap } from "comlink";
+import { init_api, getSurah, getSurahs, searchSurahs } from "./api"
+import type { Config } from "~/models/config/config_model";
 
-console.log("### Main WW Loaded ###");
+let config: Config
+
+async function init() {
+    init_api()
+}
+
+async function updateWorkerCfg(newConfig: Config) {
+    console.log(newConfig);
+    config = newConfig
+}
+
 
 const exposeObj = {
     init,
+    updateWorkerCfg,
     api: {
         getSurah,
         getSurahs,

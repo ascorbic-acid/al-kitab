@@ -1,11 +1,7 @@
 
 
-// database singleton
 import { PGlite, IdbFs } from '@electric-sql/pglite'
 import { pg_trgm } from '@electric-sql/pglite/contrib/pg_trgm';
-import { openDB, deleteDB, wrap, unwrap } from 'idb';
-
-
 
 export default class AppDB {
     private static _instance: AppDB;
@@ -31,7 +27,7 @@ export default class AppDB {
         this.db = new PGlite('idb://alkitab_db', { extensions: { pg_trgm } });
         this.createDBSinglesTable();
         this.insertSettingsSingle();
-        console.log("AppDB initialized");
+        console.log("PGLite DB initialized");
         
     }
 
