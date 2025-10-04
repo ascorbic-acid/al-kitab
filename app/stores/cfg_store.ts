@@ -1,38 +1,31 @@
-import { useWindowSize } from '@vueuse/core'
+import { now, useWindowSize } from '@vueuse/core'
 import type { Surah } from "~/models/surah/surah_model";
 import type { Ayah, MarkedAyahData } from "~/models/ayah/ayah_model";
 import { wrap, type Remote } from "comlink";
 import lStore from "~/utils/lstore";
-import { Locator } from '~/services/locator';
+import Locator from '~/services/locator';
 import type { Config } from '~/models/config/config_model';
-import IDBService from '~/services/idb_service';
+import IDBSvc from '~/services/idb_service';
 import { sl } from 'vuetify/locale';
-import MainWorkerService from '~/services/mw_service';
+import MWSvc from '~/services/mw_service';
 
 const KV_NAME = 'app-config'
 
 export const useConfigStore = defineStore("configStore", () => {
-  let idbSvc!: IDBService
+
   let config = ref<Partial<Config>>()
   let nuxtApp = useNuxtApp()
-  let sl: Locator
-  let mwSvc: MainWorkerService
 
-  async function init(_sl: Locator) {
-    sl = _sl
-    mwSvc = sl!.get(MainWorkerService)!
-    
-    idbSvc = sl!.get(IDBService)!
+
+  async function init() {
     loadConfig()
   }
 
   async function loadConfig() {
-    config.value = await idbSvc.get<Config>(KV_NAME)
+    config.value = await useSGet(IDBSvc).get<Config>(KV_NAME)
     if(!config.value) {
       await resetConfig()
-    }
-    
-    console.log("Config loaded:", config.value);
+    }    
   }
 
 
@@ -45,10 +38,8 @@ export const useConfigStore = defineStore("configStore", () => {
       config.value = await getConfig();
     }
 
-    config.value = { ...config.value, ...partialConfig };
-    console.log("new cfg to store: ", config.value);
-    
-    Locator.Instance.get(IDBService)?.set(KV_NAME, toRaw(config.value));
+    config.value = { ...config.value, ...partialConfig };    
+    Locator.Instance.get(IDBSvc)?.set(KV_NAME, toRaw(config.value));
   }
 
   async function resetConfig(): Promise<void> {
@@ -59,14 +50,12 @@ export const useConfigStore = defineStore("configStore", () => {
     }
 
     config.value = defaultConfig    
-    idbSvc.set(KV_NAME, defaultConfig);
-    console.log("Reset Config");
+    useSGet(IDBSvc).set(KV_NAME, defaultConfig);
   }
 
-  watch(config, (newValue, oldValue) => {
-    console.log(oldValue, newValue);
-    mwSvc.updateWorkerCfg(toRaw(newValue) as Config)
-  })
+  // watch(config, (newValue, oldValue) => {
+  //   // mwSvc.updateWorkerCfg(toRaw(newValue) as Config)
+  // })
 
   return {
     // variables

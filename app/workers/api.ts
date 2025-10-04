@@ -1,99 +1,83 @@
 import { type Surah } from "../models/surah/surah_model";
-import type { Ayah } from "~/models/ayah/ayah_model";
-import { PGlite, IdbFs } from '@electric-sql/pglite'
-import { pg_trgm } from '@electric-sql/pglite/contrib/pg_trgm';
-import { openDB, deleteDB, wrap, unwrap } from 'idb';
-
-import AppDB from "./pglite_db";
-import { query } from "@electric-sql/pglite/template";
+import type { AyahSearchResult } from "~/models/ayah/ayah_search_result"
+import Locator from "~/workers/core/locator";
+import IDBSvc from "./services/idb_service";
 
 const DB_VERSION = 5
 
-let db: PGlite;
 let loadedSurahs: Surah[] = []
 
 
-export async function init_api() {
+export async function init_api(sl: Locator) {
+  const idbSvc = sl.get(IDBSvc)
+  console.log(sl);
   
-  const pgLite = AppDB.Instance()
-  db = pgLite.getDB()
+  let quranJson = await idbSvc?.get("quran-json")
 
-  const res = await pgLite.getSettingsValue<String>("lastOpened")
+  if (!quranJson) {
+    let quranJsonRes = await fetch("/quran.json")
+    quranJson = await quranJsonRes.json()
+    idbSvc?.set("quran-json", quranJson)
+  }
 
-  // let quranSQLRes = await fetch("/quran.sql")
-  // let quranSql = await quranSQLRes.text()
-
-  // await db.exec(quranSql)
-  console.log("db loaded by worker!")
+  loadedSurahs = quranJson as Surah[]
 }
 
-export async function getSurah(number: number) : Promise<Surah | undefined> {
-  try {
-    let surahQuery = await db.query<Surah>(`
-        select number, name, english_name, english_name_translation, revelation_type, number_of_ayahs
-        from Surah
-        where number = ${number}
-    `)
+export async function getSurah(number: number): Promise<Surah | undefined> {
 
-    let ayahQuery = await db.query<Ayah>(`
-        select surah_number_fk, number, text, imlaei_simple_text, qpc_tajweed_text, number_in_surah,
-        juz, manzil, page, ruku, hizb_quarter, sajda
-  
-        from Ayah
-        where surah_number_fk = ${number}
-    `)
+  let surah = loadedSurahs.find(surah => surah.number === number)
 
-    if(surahQuery.rows.length > 0) {
-      let surah = surahQuery.rows[0]
-      surah!["ayahs"] = []
-
-      for(let ayah of ayahQuery.rows) {
-        ayah["hidden"] = false
-        ayah["ayah_words"] = ayah.text.replace("\n", "").split(" ").map(word => {
-          return {
-            hidden: false,
-            word: word,
-          }
-        })
-        surah!.ayahs.push(ayah)
-      }
-      return surah
-    } else {
-      return undefined
+  if (surah) {
+    for (let ayah of surah.ayahs) {
+      ayah["hidden"] = false
+      ayah["ayah_words"] = ayah.text.replace("\n", "").split(" ").map(word => {
+        return {
+          hidden: false,
+          word: word,
+        }
+      })
     }
-  } catch(e) {
-    console.error("Error fetching surah:", e)
+    return surah
   }
 }
 
-export async function getSurahs(fields: string[]) {
+export async function getSurahs() {
   const filteredSurahs = loadedSurahs.map(surah => {
     return surah
   })
   return filteredSurahs
 }
 
-export async function searchSurahs(term: string) {
+export async function search(term: string): Promise<AyahSearchResult[] | undefined> {
   if (term.length < 2) return
   const startTime = performance.now()
 
-  let ayahQuery = await db.query<Ayah>(`
-    select s.number surah_number, s.name surah_name, a.text, a.number_in_surah
-    from Ayah a
+  let results: AyahSearchResult[] = []
 
-    inner join Surah s
-    on s.number = a.surah_number_fk
+  for (let surah of loadedSurahs) {
+    for (let ayah of surah.ayahs) {
+      if (ayah.imlaei_simple_text.includes(term)) {
+        // console.warn(`Surah: ${surah?.name} | Ayah (${ayah?.numberInSurah}): ${ayah?.text} | Clear Text: ${clearText}`);
+        results.push(
+          {
+            text: ayah.text,
+            numberInSurah: ayah.numberInSurah,
+            surahName: surah.name,
+            surahNumber: surah.number,
+          }
+        )
+      }
+    }
+  }
 
-    where imlaei_simple_text like '%${term}%'
-  `)
-  
+
   const endTime = performance.now()
 
   console.log(`Search Took ${endTime - startTime} milliseconds for term: ${term}`);
-  console.log("search: ", ayahQuery.rows);
-  console.log('search amount ww: ', ayahQuery.rows.length);
+  console.log("search: ", results);
+  console.log('search amount ww: ', results.length);
 
-  return ayahQuery.rows
+  return results
 }
 
 

@@ -1,5 +1,5 @@
 // import { openDB, type IDBPDatabase,  } from 'idb';
-// import { IDBService } from './idb_service';
+// import { IDBSvc } from './idb_service';
 // import type { Config } from '~/models/config/config_model';
 
 // const KV_NAME = 'app-config'
@@ -8,10 +8,10 @@
 //   private static instance: AppConfig;
 
 //   public config!: Config;
-//   private idbService: IDBService;
+//   private IDBSvc: IDBSvc;
 
 //   private constructor() {
-//     this.idbService = IDBService.getInstance();
+//     this.IDBSvc = IDBSvc.getInstance();
 //     this.init();
 //   }
 
@@ -23,7 +23,7 @@
 //   }
 
 //   private async init() {
-//     this.config = await this.idbService.get<Config>(KV_NAME) || {
+//     this.config = await this.IDBSvc.get<Config>(KV_NAME) || {
 //       dark_mode: false,
 //       db_version: 1,
 //       last_opened_surah: 1
@@ -32,14 +32,14 @@
 
 //   public async getConfig(): Promise<Config> {
 //     // if (!this.config) {
-//     //   this.config = await this.idbService.get<Config>(KV_NAME)
+//     //   this.config = await this.IDBSvc.get<Config>(KV_NAME)
 //     // }
 //     return this.config!;
 //   }
 
 //   public async setConfig(config: Config): Promise<void> {
 //     this.config = config;
-//     await this.idbService.set(KV_NAME, config);
+//     await this.IDBSvc.set(KV_NAME, config);
 //   }
 
 // }

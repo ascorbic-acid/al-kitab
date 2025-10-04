@@ -1,10 +1,11 @@
 import type { IService } from "~/models/locator/locator_iservice";
-import type { Locator } from "./locator";
+import type Locator from "./locator";
 import { expose, proxy, wrap, type Remote } from "comlink";
 import type { Surah } from "~/models/surah/surah_model";
 import type { Config } from "~/models/config/config_model";
+import type { AyahSearchResult } from "~/models/ayah/ayah_search_result";
 
-export default class MainWorkerService implements IService {
+export default class MWSvc implements IService {
   private _worker!: Worker
   public remote!: Remote<any>
 
@@ -14,12 +15,12 @@ export default class MainWorkerService implements IService {
 
   async init(sl: Locator): Promise<void> {
     this._worker = new Worker(
-      new URL('~/workers/main_worker.ts', import.meta.url), {
+      new URL('~/workers/main.ts', import.meta.url), {
       type: 'module',
     })
 
     this.remote = wrap(this._worker)
-    this.remote.init()
+    await this.remote.init()
   }
 
   dispose(): void {
@@ -27,11 +28,12 @@ export default class MainWorkerService implements IService {
   }
 
   public async getSurah(number: number): Promise<Surah | undefined> {
-    return await this.remote.api.getSurah(number)
+    const res = await this.remote.api.getSurah(number)
+    return res
   }
 
-  public async updateWorkerCfg(newConfig: Config): Promise<void> {
-    console.log("from worker");
-    return await this.remote.updateWorkerCfg(newConfig)
+  public async search(term: string): Promise<AyahSearchResult[] | undefined> {
+    const res = await this.remote.api.search(term)
+    return res
   }
 }

@@ -11,10 +11,10 @@ import { onFetch } from './fetch';
 
 declare let self: ServiceWorkerGlobalScope
 precacheAndRoute(self.__WB_MANIFEST)
-import { Connection } from 'jsstore';
+// import { Connection } from 'jsstore';
 
 let comlinkMainPort = null
-let conn: Connection = null;
+// let conn: Connection = null;
 
 
 async function get_res() {

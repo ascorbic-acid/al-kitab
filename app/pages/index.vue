@@ -4,10 +4,6 @@
     <div v-if="true">
       <v-row>
         <v-col md="10">
-          <v-chip v-if="appStore.loadedSurah" class="mx-1" label size="small">
-            {{ appStore.loadedSurah?.name }}
-          </v-chip>
-
           <template v-if="!appStore.loadedSurah">
             <div class="mx-10">
               <br><br>
@@ -17,7 +13,7 @@
             </div>
           </template>
 
-          <div v-else class="reading-card mx-0 mt-3"
+          <div v-else class="reading-card mx-0"
             :style="{ 'background-color': cfgStore.config?.dark_mode ? '#2d2d2d' : '#dfdfdf' }">
             <h3
               v-if="appStore.loadedSurah?.number !== 9 && appStore.loadedSurah && !appStore.loading && appStore.loadedSurah?.number !== 500"

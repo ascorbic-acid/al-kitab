@@ -1,5 +1,5 @@
-import type { IService } from "~/models/locator/locator_iservice";
-import type Locator from "./locator";
+import type { IService } from "~/workers/models/locator/locator_iservice.ts";
+import type Locator from "~/workers/core/locator.ts";
 
 export default class IDBSvc implements IService {
   private db: IDBDatabase | null = null;

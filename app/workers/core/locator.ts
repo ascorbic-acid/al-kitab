@@ -1,4 +1,4 @@
-import type { IService } from "~/models/locator/locator_iservice";
+import type { IService } from "~/workers/models/locator/locator_iservice";
 
 export default class Locator {
     private static _instance: Locator;
@@ -18,7 +18,7 @@ export default class Locator {
         if (!this.services.has(ServiceType)) {
             const instance = new ServiceType();
             this.services.set(ServiceType, instance);
-            // instance.init(this);
+            instance.init(this);
             this.ResolvePendingRequest(ServiceType, instance);
             return instance;
         } else {

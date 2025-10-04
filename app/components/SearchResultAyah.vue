@@ -1,14 +1,14 @@
 <template>
     <div class="ayah__span" :style="{ 'font-size': `clamp(1rem, ${fontSize}, 4rem)`, 'cursor': 'pointer' }"
-        :kbt-ayah-nr="props.item.number_in_surah" :id="`akb-ayah-nr__${props.item.number_in_surah}`">
+        :kbt-ayah-nr="props.item.numberInSurah" :id="`akb-ayah-nr__${props.item.numberInSurah}`">
 
         <template style="display: inline-block;" v-for="word, idx in props.item.text.split(' ')">
-            <p :kbt-ayah-nr="props.item.number_in_surah" style="display: inline;">{{ " " + word + " " }}</p>
+            <p :kbt-ayah-nr="props.item.numberInSurah" style="display: inline;">{{ " " + word + " " }}</p>
         </template>
 
         <div class="ayah-num-icon__container" >
             <img class="ayah-num-icon__icon" src="/icons/ayah.svg" :style="{'width': `${ayahNumFontSize!+15}px`}" />
-            <span class="ayah-num-icon__text-num" :style="{'font-size': `${ayahNumFontSize}px`}" >{{ props.item.number_in_surah }}</span>
+            <span class="ayah-num-icon__text-num" :style="{'font-size': `${ayahNumFontSize}px`}" >{{ props.item.numberInSurah }}</span>
         </div>
     </div>
 </template>

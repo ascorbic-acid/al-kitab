@@ -10,11 +10,11 @@ export default defineNuxtConfig({
     compatibilityVersion: 4
   },
   modules: [// '@vueuse/nuxt',
-  // 'nuxt-auth-utils',
-  '@pinia/nuxt', // 'nuxt-echarts',
-  'vuetify-nuxt-module', // '@nuxt/eslint',
-  'nuxt-icons', //'@nuxt/icon', // '@nuxt/test-utils/module',
-  '@nuxtjs/i18n', 'nuxt-svgo', 'nuxt-snackbar', '@vite-pwa/nuxt', '@nuxt/icon'],
+    // 'nuxt-auth-utils',
+    '@pinia/nuxt', // 'nuxt-echarts',
+    'vuetify-nuxt-module', // '@nuxt/eslint',
+    'nuxt-icons', //'@nuxt/icon', // '@nuxt/test-utils/module',
+    '@nuxtjs/i18n', 'nuxt-svgo', 'nuxt-snackbar', '@vite-pwa/nuxt', '@nuxt/icon'],
   // spaLoadingTemplate: false,
   // extends: ['~/lib/features/home'],
   css: ['~/assets/styles/index.css'],
@@ -169,7 +169,17 @@ export default defineNuxtConfig({
   // },
 
   vite: {
-    build: { sourcemap: false },
+    worker: {
+      format: "es"
+    },
+    build: {
+      sourcemap: isDev,
+      commonjsOptions: {
+        dynamicRequireTargets: [
+          '~/workers/main.ts',
+        ],
+      },
+    },
     optimizeDeps: {
       exclude: ['@electric-sql/pglite']
     },
@@ -177,7 +187,7 @@ export default defineNuxtConfig({
       allowedHosts: ["ktb.local"]
     }
   },
-  
+
   runtimeConfig: {
     github: {
       clientId: '',

@@ -1,14 +1,14 @@
 import { openDB, type IDBPDatabase,  } from 'idb';
 
 
-export class IDBService {
-  private static instance: IDBService;
+export class IDBSvc {
+  private static instance: IDBSvc;
   
   private db: IDBDatabase | null = null;
   
   private initPromise: Promise<void>;
   
-  private readonly DB_NAME = 'IDBServiceKV';
+  private readonly DB_NAME = 'IDBSvcKV';
   private readonly DB_VERSION = 1;
   private readonly STORE_NAME = 'keyval';
 
@@ -37,11 +37,11 @@ export class IDBService {
     });
   }
 
-  public static getInstance(): IDBService {
-    if (!IDBService.instance) {
-      IDBService.instance = new IDBService();
+  public static getInstance(): IDBSvc {
+    if (!IDBSvc.instance) {
+      IDBSvc.instance = new IDBSvc();
     }
-    return IDBService.instance;
+    return IDBSvc.instance;
   }
 
   public async get<T>(key: IDBValidKey): Promise<T | undefined> {

@@ -5,7 +5,11 @@
     </div>
 
     <!-- <v-breadcrumbs :items="breadcrumbs" /> -->
-    <v-spacer />
+    <div class="mx-1 mt-4" style="display: flex; align-items: center;">
+      <v-chip v-if="appStore.loadedSurah" class="mx-1" label size="small">
+        {{ appStore.loadedSurah?.name }}
+      </v-chip>
+    </div>
 
     <v-spacer />
 
@@ -52,10 +56,10 @@ const { $event } = useNuxtApp()
 async function openMarkSurahAyahMenu(event: PointerEvent) {
   const markedAyahsData = uGetMarkedSurahsAyahsData()
 
-  if(markedAyahsData.length < 1) {
-    snackbar.add({type: 'info', text: "الرجاء النقر على الاية وضفتها للعلامات."})
+  if (markedAyahsData.length < 1) {
+    snackbar.add({ type: 'info', text: "الرجاء النقر على الاية وضفتها للعلامات." })
     return
-  } 
+  }
 
   let items: MenuItem[] = []
 

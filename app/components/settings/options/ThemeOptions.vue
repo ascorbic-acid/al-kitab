@@ -2,7 +2,7 @@
     <div style="display: flex; justify-content: space-between;">
         <div>
             <h4 >تفعيل الوضع اليلي</h4>
-            <p style="color: gray">يساعد على النظر</p> <span>{{ darkMode }}</span>
+            <p style="color: gray">يساعد على النظر</p>
         </div>
 
         <div>

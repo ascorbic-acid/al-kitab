@@ -27,7 +27,7 @@
         </v-list-item>
       </v-list>
     </div>
-    <div class="mt-3" style="display: flex; flex-direction: row; height: 100%; justify-content: space-around;">
+    <div style="display: flex; flex-direction: row; height: 100%; justify-content: space-around;">
       <!-- surahs column -->
       <div style="height: 80%; overflow-y: auto;">
 

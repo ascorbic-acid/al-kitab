@@ -26,7 +26,7 @@
                             style="background-color: #dfdfdf;">
                             <div class="mx-2 my-3">
                                 <v-chip label size="small">
-                                    <p style="font-size: 14px;">{{ item.surah_name }}</p>
+                                    <p style="font-size: 14px;">{{ item.surahName }}</p>
                                 </v-chip>
                             </div>
                             <div class="mx-5 my-2">
@@ -45,6 +45,9 @@
 import type { AyahSearchResult } from '~/models/ayah/ayah_search_result'
 import { useDebounceFn } from "@vueuse/core"
 import SearchResultAyah from './SearchResultAyah.vue'
+import Locator from '~/services/locator'
+import MWSvc from '~/services/mw_service'
+
 const { $listen } = useNuxtApp()
 const appStore = useAppStore()
 let searching = ref(false)
@@ -52,22 +55,22 @@ let searching = ref(false)
 let dialog = ref(false)
 let items = shallowRef<AyahSearchResult[]>([
     {
-        surah_number: 25,
-        surah_name: "سُورَةُ الفُرۡقَانِ",
+        surahNumber: 25,
+        surahName: "سُورَةُ الفُرۡقَانِ",
         text: "وَمَن تَابَ وَعَمِلَ صَـٰلِحࣰا فَإِنَّهُۥ یَتُوبُ إِلَى ٱللَّهِ مَتَابࣰا",
-        number_in_surah: 71
+        numberInSurah: 71
     },
     {
-        surah_number: 23,
-        surah_name: "سُورَةُ المُؤۡمِنُونَ",
+        surahNumber: 23,
+        surahName: "سُورَةُ المُؤۡمِنُونَ",
         text: "أُو۟لَـٰۤىِٕكَ یُسَـٰرِعُونَ فِی ٱلۡخَیۡرَ ٰ⁠تِ وَهُمۡ لَهَا سَـٰبِقُونَ",
-        number_in_surah: 61
+        numberInSurah: 61
     },
     {
-        surah_number: 2,
-        surah_name: "سُورَةُ البَقَرَةِ",
+        surahNumber: 2,
+        surahName: "سُورَةُ البَقَرَةِ",
         text: "ءَامَنَ ٱلرَّسُولُ بِمَاۤ أُنزِلَ إِلَیۡهِ مِن رَّبِّهِۦ وَٱلۡمُؤۡمِنُونَۚ كُلٌّ ءَامَنَ بِٱللَّهِ وَمَلَـٰۤىِٕكَتِهِۦ وَكُتُبِهِۦ وَرُسُلِهِۦ لَا نُفَرِّقُ بَیۡنَ أَحَدࣲ مِّن رُّسُلِهِۦۚ وَقَالُوا۟ سَمِعۡنَا وَأَطَعۡنَاۖ غُفۡرَانَكَ رَبَّنَا وَإِلَیۡكَ ٱلۡمَصِیرُ",
-        number_in_surah: 285
+        numberInSurah: 285
     }
 ])
 
@@ -78,9 +81,9 @@ async function search(term: string) {
 }
 
 let dbcSearch = useDebounceFn(async (term: string) => {
-    if (term.length > 1) {
-        let res = await appStore.wwLink!.api.searchSurahs(term)
-        items.value = res
+    if (term && term.length > 1) {
+        let res = await useSGet(MWSvc).search(term)
+        items.value = res ?? []
     } else {
         items.value = []
     }
@@ -90,7 +93,7 @@ let dbcSearch = useDebounceFn(async (term: string) => {
 async function searchSelect(result: AyahSearchResult) {
     onMenuClose(true)
     setTimeout(() => {
-        uGoToAyah(result.number_in_surah, result.surah_number, appStore)
+        uGoToAyah(result.numberInSurah, result.numberInSurah, appStore)
     }, 500)
 }
 
@@ -102,8 +105,6 @@ function onMenuOpen(_data: any) {
 
 function onMenuClose(value: boolean) {
     dialog.value = false
-    console.log('closed');
-    // items.value = []
     document.querySelector(".v-application__wrap")!.style = "filter: blur(0px)"
 }
 

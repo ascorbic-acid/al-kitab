@@ -1,8 +1,8 @@
 import { useWindowSize } from '@vueuse/core'
 import type { Surah } from "~/models/surah/surah_model";
 import type { Ayah, MarkedAyahData } from "~/models/ayah/ayah_model";
-import type { Locator } from '~/services/locator';
-import MainWorkerService from '~/services/mw_service';
+import type Locator from '~/services/locator';
+import MWSvc from '~/services/mw_service';
 
 
 export const useAppStore = defineStore("appStore", () => {
@@ -14,13 +14,8 @@ export const useAppStore = defineStore("appStore", () => {
   let loadedSurah = ref<Surah>()
   let loadedMarkedAyahData = ref<MarkedAyahData[]>()
   let fontSize = ref(50)
-  let sl: Locator
-  let mwSvc: MainWorkerService
 
-  async function init(_sl: Locator) {
-    sl = _sl
-    mwSvc = sl!.get(MainWorkerService)!
-
+  async function init() {
     setTimeout(() => {
       if (!import.meta.dev) {
         loadSurah(1)
@@ -33,7 +28,11 @@ export const useAppStore = defineStore("appStore", () => {
   async function loadSurah(number: number) {
     try {
       loading.value = true
-      loadedSurah.value = await mwSvc.getSurah(number)
+      let n = performance.now()
+      loadedSurah.value = await useSGet(MWSvc).getSurah(number)
+      let nx = performance.now()
+      console.log(`time ${nx - n}`);
+      
       loading.value = false
     } catch (e) {
       console.log(e);

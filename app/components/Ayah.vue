@@ -1,10 +1,10 @@
 <template>
     <div class="ayah__span" @click="clickEvent(ayah, $event)" @dblclick="dblClickEvent(ayah, $event)"
-        :style="{ 'font-size': `clamp(1rem, ${fontSize}, 4rem)` }" :kbt-ayah-nr="props.ayah.number_in_surah"
-        :id="`akb-ayah-nr__${props.ayah.number_in_surah}`">
+        :style="{ 'font-size': `clamp(1rem, ${fontSize}, 4rem)` }" :kbt-ayah-nr="props.ayah.numberInSurah"
+        :id="`akb-ayah-nr__${props.ayah.numberInSurah}`">
 
         <template v-for="ayahWord, idx in props.ayah.ayah_words">
-            <p :kbt-ayah-nr="props.ayah.number_in_surah"
+            <p :kbt-ayah-nr="props.ayah.numberInSurah"
                 :style="{ 'display': 'inline', 'filter': ayahWord.hidden ? 'blur(6px)' : 'blur(0px)' }">{{ " " +
                     ayahWord.word + " " }}
             </p>
@@ -16,7 +16,7 @@
         <div class="ayah-num-icon__container">
             <img class="ayah-num-icon__icon" src="/icons/ayah.svg" :style="{ 'width': `${ayahNumFontSize! + 15}px` }" />
             <span class="ayah-num-icon__text-num" :style="{ 'font-size': `${ayahNumFontSize}px` }">{{
-                props.ayah.number_in_surah
+                props.ayah.numberInSurah
                 }}</span>
         </div>
     </div>
@@ -104,9 +104,9 @@ async function openAyahMenu(ayah: Ayah, event: PointerEvent) {
                 subtitle: "لاستكمال القرائة من هنا بعد فتح التطبيق",
                 icon: 'subway:mark-2',
                 itemCB: async () => {
-                    uMarkAyah(ayah.number_in_surah, appStore.loadedSurah?.number!)
-                    // uGlowAyah(ayah.number_in_surah)
-                    snackbar.add({ type: 'success', text: `تم حفض العلامة للاية (${ayah.number_in_surah})` })
+                    uMarkAyah(ayah.numberInSurah, appStore.loadedSurah?.number!)
+                    // uGlowAyah(ayah.numberInSurah)
+                    snackbar.add({ type: 'success', text: `تم حفض العلامة للاية (${ayah.numberInSurah})` })
                 }
             },
             {
@@ -121,10 +121,10 @@ async function openAyahMenu(ayah: Ayah, event: PointerEvent) {
         ],
         target: event,
         openCB: function () {
-            return uGlowAyah(ayah.number_in_surah)
+            return uGlowAyah(ayah.numberInSurah)
         },
         closeCB: async function () {
-            return uUnglowAyah(ayah.number_in_surah)
+            return uUnglowAyah(ayah.numberInSurah)
         }
     })
 }
