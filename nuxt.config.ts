@@ -80,10 +80,12 @@ export default defineNuxtConfig({
     injectRegister: "auto",
     injectManifest: {
       globPatterns: ['**/*.{js,json,css,html,txt,svg,png,ico,webp,woff,woff2,ttf,eot,otf}'],
+      maximumFileSizeToCacheInBytes: 10485760,
     },
     includeManifestIcons: true,
     workbox: {
       globPatterns: ['**/*.{js,json,css,html,txt,svg,png,ico,webp,woff,woff2,ttf,eot,otf}'],
+      maximumFileSizeToCacheInBytes: 10485760,
     },
     registerType: 'autoUpdate',
     client: {
