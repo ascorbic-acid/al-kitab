@@ -105,7 +105,6 @@ async function openAyahMenu(ayah: Ayah, event: MouseEvent) {
 .ayah-num-icon__container {
     position: relative;
     display: inline-block;
-    top: 0px;
     user-select: none;
     line-height: 0;
     vertical-align: middle;

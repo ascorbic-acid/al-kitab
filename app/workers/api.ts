@@ -2,13 +2,18 @@ import { type Surah } from "../models/surah/surah_model";
 import type { AyahSearchResult } from "~/models/ayah/ayah_search_result"
 import Locator from "~/workers/core/locator";
 import IDBSvc from "./services/idb_service";
+import WhisperService from "./services/whisper_service";
+import ParakeetService from "./services/parakeet_service";
+import FastConformerService from "./services/fastconformer_service";
 
 const DB_VERSION = 5
 
 let loadedSurahs: Surah[] = []
+let serviceLocator: Locator
 
 
 export async function init_api(sl: Locator) {
+  serviceLocator = sl
   const idbSvc = sl.get(IDBSvc)
   console.log(sl);
   
@@ -21,6 +26,62 @@ export async function init_api(sl: Locator) {
   }
 
   loadedSurahs = quranJson as Surah[]
+}
+
+export async function loadWhisperModel(cb?: any) {
+  const whisperSvc = serviceLocator.get(WhisperService)
+  if (whisperSvc) {
+    await whisperSvc.loadModel(cb)
+  }
+}
+
+export async function transcribe(audio: Float32Array, options?: any) {
+  const whisperSvc = serviceLocator.get(WhisperService)
+  if (whisperSvc) {
+    return await whisperSvc.transcribe(audio, options)
+  }
+}
+
+export async function loadParakeetModel(cb?: any) {
+  const parakeetSvc = serviceLocator.get(ParakeetService)
+  if (parakeetSvc) {
+    await parakeetSvc.loadModel(cb)
+  }
+}
+
+export async function transcribeParakeet(audio: Float32Array, options?: any) {
+  const parakeetSvc = serviceLocator.get(ParakeetService)
+  if (parakeetSvc) {
+    return await parakeetSvc.transcribe(audio, options)
+  }
+}
+
+export async function loadFastConformerModel(cb?: any) {
+  const fastConformerSvc = serviceLocator.get(FastConformerService)
+  if (fastConformerSvc) {
+    await fastConformerSvc.loadModel()
+  }
+}
+
+export async function transcribeFastConformer(audio: Float32Array, options?: any) {
+  const fastConformerSvc = serviceLocator.get(FastConformerService)
+  if (fastConformerSvc) {
+    return await fastConformerSvc.transcribe(audio, options)
+  }
+}
+
+export async function transcribeFastConformerStreaming(audio: Float32Array, options?: any) {
+  const fastConformerSvc = serviceLocator.get(FastConformerService)
+  if (fastConformerSvc) {
+    return await fastConformerSvc.transcribeStreaming(audio, options)
+  }
+}
+
+export async function resetFastConformerStreaming() {
+  const fastConformerSvc = serviceLocator.get(FastConformerService)
+  if (fastConformerSvc) {
+    fastConformerSvc.resetStreaming()
+  }
 }
 
 export async function getSurah(number: number): Promise<Surah | undefined> {
