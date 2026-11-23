@@ -57,6 +57,23 @@ function dblClickEvent(ayah: Ayah, event: MouseEvent) {
     }
 }
 
+/**
+ * Copy the ayah text to the clipboard, followed by its number and a
+ * "[surah name: ayah number]" reference line.
+ */
+async function copyAyah(ayah: Ayah) {
+    const surahName = appStore.loadedSurah?.name ?? ''
+    const text = `${ayah.text.trim()} ﴿${ayah.numberInSurah}﴾\n[${surahName}: ${ayah.numberInSurah}]`
+
+    try {
+        await navigator.clipboard.writeText(text)
+        snackbar.add({ type: 'success', text: `تم نسخ الاية (${ayah.numberInSurah})` })
+    } catch (err) {
+        console.error('copy ayah failed: ', err)
+        snackbar.add({ type: 'error', text: 'تعذر نسخ الاية' })
+    }
+}
+
 async function openAyahMenu(ayah: Ayah, event: MouseEvent) {
     $event("custom-menu", {
         items: [
@@ -67,6 +84,14 @@ async function openAyahMenu(ayah: Ayah, event: MouseEvent) {
                 itemCB: async () => {
                     uMarkAyah(ayah.numberInSurah, appStore.loadedSurah?.number!)
                     snackbar.add({ type: 'success', text: `تم حفض العلامة للاية (${ayah.numberInSurah})` })
+                }
+            },
+            {
+                label: "نسخ الاية",
+                subtitle: "نسخ نص الاية مع اسم السورة ورقم الاية",
+                icon: 'mdi:content-copy',
+                itemCB: async () => {
+                    await copyAyah(ayah)
                 }
             },
             {
